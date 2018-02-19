@@ -18,11 +18,6 @@ import adapters.User32;
 
 public class MinerBase {
 
-	/*
-	 * CONST BASE GAME OFFSETS
-	 */
-	static int O_Screen = 0x0215070C, O_Clock = 0x02150724;
-	static int O_ChampList = 0x02D968E4;
 
 	/*
 	 * MINER BASE VARIABLES
@@ -44,8 +39,9 @@ public class MinerBase {
 
 
 	public static void main(String[] args) {
-		MinerBase.Setup();
+		System.out.println("MinerBase Main");
 		/*
+		MinerBase.Setup();
 		Unit aUnit = MinerBase.GetPlayer(0);
 		ArrayList<Unit> aChampList = new ArrayList<Unit>();
 		for (int x=0; x<10; x++)

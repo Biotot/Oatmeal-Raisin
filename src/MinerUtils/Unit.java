@@ -4,18 +4,19 @@ public class Unit {
 
 	/*
 	 * OFFSET LISTS
+	 * We want to expand this to read the cheat engine file
 	 */
-	public static final int O_HPC = 0x678, O_HPM = 0x0, O_MAC = 0x0, O_MAM = 0x0;
+	public static final int O_HPC = 0x678, O_HPM = 0x0688, O_MAC = 0x02CC, O_MAM = 0x02DC;
 	public static final int O_X = 0x80, O_Y = 0x84, O_Z = 0x88;
-	public static final int O_ChampName = 0x7C0, O_PlayerName=0x0, O_UnitType=0x0;
-	public static final int O_Movespeed = 0x0;
+	public static final int O_ChampName = 0x7C0, O_PlayerName=0x018, O_UnitType=0x018, O_Team=0x014;
+	public static final int O_Movespeed = 0x0AA0;
 	
 	
 	
 	/*
 	 * Basically Defines.
 	 */
-	public static final int CHAMP_TYPE = 512, MINION_TYPE=12;
+	public static final int CHAMP_TYPE = 5212, MINION_TYPE=12;
 	
 	/*
 	 * VARS AND SHIT

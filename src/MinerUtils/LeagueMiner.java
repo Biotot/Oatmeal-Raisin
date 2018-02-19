@@ -6,7 +6,13 @@ import com.sun.jna.Memory;
 
 public class LeagueMiner extends MinerBase {
 
-	Unit m_Player;
+	/*
+	 * CONST BASE GAME OFFSETS
+	 */
+	static final int O_Screen = 0x0215070C, O_Clock = 0x02150724;
+	static final int O_ChampList = 0x02D968E4, O_UserLocation = 0x02DB2160;
+	
+	int m_PlayerIndex;
 	ArrayList<Unit> m_ChampList;
 	
 	
@@ -80,7 +86,7 @@ public class LeagueMiner extends MinerBase {
 	public static Unit GetPlayer(int tUnitIndex)
 	{
 		Unit aPlayer = new Unit();
-		if (tUnitIndex>=0 && tUnitIndex<10)
+		if (tUnitIndex>=0 && tUnitIndex<10)//Change to 12 if rito shines hexakill upon us.
 		{
 			Memory aChampListAddress = readMemory(m_Game, O_GameBase + O_ChampList ,4);
 			Memory aChampAddress = readMemory(m_Game, aChampListAddress.getInt(0) + (0x04*tUnitIndex) ,4);
