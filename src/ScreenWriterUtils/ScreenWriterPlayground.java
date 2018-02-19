@@ -36,20 +36,22 @@ public class ScreenWriterPlayground {
 				//frame.setUndecorated(true);
 				frame.setBackground(new Color (0,0,0,0));
 				//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				frame.add(new MovingShapePane());
+				frame.add(new LeagueChampHUD());
+				//frame.add(new MovingShapePane());
 				
 				frame.setAlwaysOnTop(true);
 				frame.pack();
 				frame.setLocationRelativeTo(null);
 				frame.setVisible(true);
+				setTransparent(frame);
 				
-				
+				/*
 				JLabel label = new JLabel("WINDOW-LEVEL LABEL");
 				label.setFont(new Font("", Font.BOLD, 69));
 				label.setForeground(new Color(12, 23, 255, 190));
 				frame.add(label);
 				
-				setTransparent(frame);
+				*/
 			}
 			
 			private HWND getHWnd(Component w) {

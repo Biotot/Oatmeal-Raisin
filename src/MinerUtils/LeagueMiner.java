@@ -12,30 +12,48 @@ public class LeagueMiner extends MinerBase {
 	static final int O_Screen = 0x0215070C, O_Clock = 0x02150724;
 	static final int O_ChampList = 0x02D968E4, O_UserLocation = 0x02DB2160;
 	
-	int m_PlayerIndex;
-	ArrayList<Unit> m_ChampList;
+	public int m_PlayerIndex;
+	public float m_Clock;
+	public ArrayList<Unit> m_ChampList;
 	
 	
-	LeagueMiner()
+	public LeagueMiner()
 	{
+		Setup();
 		m_ChampList = new ArrayList<Unit>();
+		PlayerListInit();
+		/*//TEMP GHETTO RIGGING FOR TESTING
+		for(int x=0; x<100; x++)
+		{
+			UpdatePlayerListPrimary();
+			UpdatePlayerListSecondary();
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		*/
 	}
 	
 	
-	public int LoadPlayerList()
+	public int PlayerListInit()
 	{
-		float aLoadTime = GetClock();
+		m_Clock = GetClock();
 		for(int x=0; x<10; x++)//Change to 12 if rito shines hexakill upon us.
 		{
 			Unit aUnit = GetPlayer(x);
 			
 			if (aUnit.m_UnitType==Unit.CHAMP_TYPE)
 			{
-				aUnit.m_LastUpdated = aLoadTime;
+				aUnit.m_LastUpdated = m_Clock;
+				aUnit.m_DistanceToUser = 0;
 				m_ChampList.add(aUnit);
 			}
 			else//if invalid the champ list has ended, stop looking. 
 			{
+				System.out.println("Invalid champ @" + x);
 				break;
 			}
 		}
@@ -43,7 +61,33 @@ public class LeagueMiner extends MinerBase {
 		return m_ChampList.size();
 	}
 	
-	
+	public void UpdatePlayerListPrimary()
+	{
+		m_Clock = GetClock();
+		for (int x=0; x<m_ChampList.size(); x++)
+		{
+			UpdatePlayerPrimary(m_ChampList.get(x), m_Clock);
+			//This just looks ugly. Functional, but ugly.
+			if (x!=m_PlayerIndex)//If the unit isn't the user find the distance
+			{
+				m_ChampList.get(x).m_DistanceToUser = m_ChampList.get(x).GetETA(m_ChampList.get(m_PlayerIndex), m_Clock);
+			}
+			else
+			{
+				m_ChampList.get(x).m_DistanceToUser = 0;
+			}
+		}
+	}
+
+	public void UpdatePlayerListSecondary()
+	{
+		for (int x=0; x<m_ChampList.size(); x++)
+		{
+			UpdatePlayerSecondary(m_ChampList.get(x));
+		}
+	}
+	//This would be cleaner in the Unit class, but I'd prefer the readmemory to be an inherited call instead of static.
+	//Potential change for thin mints
 	public boolean UpdatePlayerPrimary(Unit tUnit, float tClock)
 	{
 		boolean aChanged = false;//Check if any values changed. If yes, update last updated
@@ -58,10 +102,10 @@ public class LeagueMiner extends MinerBase {
 		aChanged = (aChanged || (aZ!=tUnit.m_Z));
 		float aHPC = tUnit.m_HPC;
 		tUnit.m_HPC = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_HPC,4).getFloat(0);
-		aChanged = (aChanged || (aHPC!=tUnit.m_Z));
+		aChanged = (aChanged || (aHPC!=tUnit.m_HPC));
 		float aMAC = tUnit.m_MAC;
 		tUnit.m_MAC = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_MAC,4).getFloat(0);
-		aChanged = (aChanged || (aMAC!=tUnit.m_Z));
+		aChanged = (aChanged || (aMAC!=tUnit.m_MAC));
 		
 		if (aChanged)//Check if any values changed. If yes, update last updated
 		{
@@ -92,6 +136,7 @@ public class LeagueMiner extends MinerBase {
 			Memory aChampAddress = readMemory(m_Game, aChampListAddress.getInt(0) + (0x04*tUnitIndex) ,4);
 			aPlayer.m_UnitBase = aChampAddress.getInt(0);
 			aPlayer.m_UnitType = readMemory(m_Game, aPlayer.m_UnitBase + Unit.O_UnitType,4).getInt(0);
+			aPlayer.m_Team = readMemory(m_Game, aPlayer.m_UnitBase + Unit.O_Team,4).getInt(0);
 			aPlayer.m_ChampName = readMemory(m_Game, aPlayer.m_UnitBase + Unit.O_ChampName,10).getString(0);
 			aPlayer.m_PlayerName = readMemory(m_Game, aPlayer.m_UnitBase + Unit.O_PlayerName,10).getString(0);
 		}
