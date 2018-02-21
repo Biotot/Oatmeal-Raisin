@@ -15,32 +15,21 @@ public class LeagueMiner extends MinerBase {
 	public int m_PlayerIndex;
 	public float m_Clock;
 	public ArrayList<Unit> m_ChampList;
-	
+	public float m_HeatMap[][];
 	
 	public LeagueMiner()
 	{
+		m_HeatMap = new float[5][5];
 		Setup();
 		m_ChampList = new ArrayList<Unit>();
 		PlayerListInit();
-		/*//TEMP GHETTO RIGGING FOR TESTING
-		for(int x=0; x<100; x++)
-		{
-			UpdatePlayerListPrimary();
-			UpdatePlayerListSecondary();
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		*/
 	}
 	
 	
 	public int PlayerListInit()
 	{
 		m_Clock = GetClock();
+		int aUserBase = readMemory(m_Game, O_GameBase + O_UserLocation,4).getInt(0);
 		for(int x=0; x<10; x++)//Change to 12 if rito shines hexakill upon us.
 		{
 			Unit aUnit = GetPlayer(x);
@@ -49,6 +38,10 @@ public class LeagueMiner extends MinerBase {
 			{
 				aUnit.m_LastUpdated = m_Clock;
 				aUnit.m_DistanceToUser = 0;
+				if (aUnit.m_UnitBase==aUserBase)
+				{
+					m_PlayerIndex = x;
+				}
 				m_ChampList.add(aUnit);
 			}
 			else//if invalid the champ list has ended, stop looking. 
@@ -57,7 +50,7 @@ public class LeagueMiner extends MinerBase {
 				break;
 			}
 		}
-		
+
 		return m_ChampList.size();
 	}
 	
@@ -68,9 +61,16 @@ public class LeagueMiner extends MinerBase {
 		{
 			UpdatePlayerPrimary(m_ChampList.get(x), m_Clock);
 			//This just looks ugly. Functional, but ugly.
-			if (x!=m_PlayerIndex)//If the unit isn't the user find the distance
+			if (x!=m_PlayerIndex)//If the unit isn't the user find the distance.
 			{
-				m_ChampList.get(x).m_DistanceToUser = m_ChampList.get(x).GetETA(m_ChampList.get(m_PlayerIndex), m_Clock);
+				if (x!=m_PlayerIndex)//User isnt dead
+				{
+					m_ChampList.get(x).m_DistanceToUser = m_ChampList.get(x).GetETA(m_ChampList.get(m_PlayerIndex), m_Clock);
+				}
+				else
+				{
+					m_ChampList.get(x).m_DistanceToUser = 15000;
+				}
 			}
 			else
 			{
@@ -125,7 +125,12 @@ public class LeagueMiner extends MinerBase {
 		tUnit.m_MAM = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_MAM,4).getFloat(0);
 		tUnit.m_Movespeed = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_Movespeed,4).getFloat(0);
 	}
-	
+	public void UpdateMapPressure()
+	{
+		
+		
+		
+	}
 	
 	public static Unit GetPlayer(int tUnitIndex)
 	{
