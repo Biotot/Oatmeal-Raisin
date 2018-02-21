@@ -11,15 +11,16 @@ public class LeagueMiner extends MinerBase {
 	 */
 	static final int O_Screen = 0x0215070C, O_Clock = 0x02150724;
 	static final int O_ChampList = 0x02D968E4, O_UserLocation = 0x02DB2160;
+	public static final int HEATMAPSIZE = 5, MAPWIDTH = 15000, MAPHEIGHT = 15000;//Summoners rift specific. Fuck the other maps
 	
 	public int m_PlayerIndex;
 	public float m_Clock;
 	public ArrayList<Unit> m_ChampList;
-	public float m_HeatMap[][];
+	public HeatmapPoint m_HeatMap[][];
 	
 	public LeagueMiner()
 	{
-		m_HeatMap = new float[5][5];
+		m_HeatMap = new HeatmapPoint[HEATMAPSIZE][HEATMAPSIZE];
 		Setup();
 		m_ChampList = new ArrayList<Unit>();
 		PlayerListInit();
@@ -50,7 +51,22 @@ public class LeagueMiner extends MinerBase {
 				break;
 			}
 		}
-
+		//Loading the heatmap objects.
+		
+		int aHeatMapIntervalX = MAPWIDTH/(HEATMAPSIZE+1);
+		int aHeatMapIntervalY = MAPHEIGHT/(HEATMAPSIZE+1);
+		for(int x=0; x<HEATMAPSIZE; x++)
+		{
+			for (int y=0; y<HEATMAPSIZE; y++)
+			{
+				m_HeatMap[x][y] = new HeatmapPoint();
+				m_HeatMap[x][y].m_Coords[0] = (x+1)*aHeatMapIntervalX;
+				m_HeatMap[x][y].m_Coords[1] = 100;//Needs a y to reuse the distance math. Should throw this out tbh
+				m_HeatMap[x][y].m_Coords[2] = (y+1)*aHeatMapIntervalY;
+			}
+			
+		}
+		
 		return m_ChampList.size();
 	}
 	
@@ -63,9 +79,9 @@ public class LeagueMiner extends MinerBase {
 			//This just looks ugly. Functional, but ugly.
 			if (x!=m_PlayerIndex)//If the unit isn't the user find the distance.
 			{
-				if (x!=m_PlayerIndex)//User isnt dead
+				if (m_ChampList.get(x).m_Alive)//User isnt dead
 				{
-					m_ChampList.get(x).m_DistanceToUser = m_ChampList.get(x).GetETA(m_ChampList.get(m_PlayerIndex), m_Clock);
+					m_ChampList.get(x).m_DistanceToUser = m_ChampList.get(x).GetETA(m_ChampList.get(m_PlayerIndex).m_Coords, m_Clock);
 				}
 				else
 				{
@@ -91,15 +107,15 @@ public class LeagueMiner extends MinerBase {
 	public boolean UpdatePlayerPrimary(Unit tUnit, float tClock)
 	{
 		boolean aChanged = false;//Check if any values changed. If yes, update last updated
-		float aX = tUnit.m_X;
-		tUnit.m_X = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_X,4).getFloat(0);
-		aChanged = (aChanged || (aX!=tUnit.m_X));
-		float aY = tUnit.m_Y;
-		tUnit.m_Y = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_Y,4).getFloat(0);
-		aChanged = (aChanged || (aY!=tUnit.m_Y));
-		float aZ = tUnit.m_Z;
-		tUnit.m_Z = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_Z,4).getFloat(0);
-		aChanged = (aChanged || (aZ!=tUnit.m_Z));
+		float aX = tUnit.m_Coords[0];
+		tUnit.m_Coords[0] = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_X,4).getFloat(0);
+		aChanged = (aChanged || (aX!=tUnit.m_Coords[0]));
+		float aY = tUnit.m_Coords[1];
+		tUnit.m_Coords[1] = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_Y,4).getFloat(0);
+		aChanged = (aChanged || (aY!=tUnit.m_Coords[1]));
+		float aZ = tUnit.m_Coords[2];
+		tUnit.m_Coords[2] = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_Z,4).getFloat(0);
+		aChanged = (aChanged || (aZ!=tUnit.m_Coords[2]));
 		float aHPC = tUnit.m_HPC;
 		tUnit.m_HPC = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_HPC,4).getFloat(0);
 		aChanged = (aChanged || (aHPC!=tUnit.m_HPC));
@@ -124,11 +140,55 @@ public class LeagueMiner extends MinerBase {
 		tUnit.m_HPM = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_HPM,4).getFloat(0);
 		tUnit.m_MAM = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_MAM,4).getFloat(0);
 		tUnit.m_Movespeed = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_Movespeed,4).getFloat(0);
+		tUnit.m_Alive = (642==readMemory(m_Game, tUnit.m_UnitBase + Unit.O_Alive,4).getInt(0));
 	}
+	
 	public void UpdateMapPressure()
 	{
+		m_Clock = GetClock();//Shouldn't be needed. Clock should be accurate. This is just assuring accuracy
+		int aUserTeam = m_ChampList.get(m_PlayerIndex).m_Team;
+		int aDMult = 5;//scalable multiplier for the distance. 
+		float aScoreSum = 0;
+
+		//fugly ass loop. N*(M^2) + 2(M^2)
+		for(int x=0; x<HEATMAPSIZE; x++)
+		{
+			for (int y=0; y<HEATMAPSIZE; y++)
+			{
+				m_HeatMap[x][y].m_Score = 0;
+				for (int z=0; z<m_ChampList.size(); z++)
+				{
+					if (m_ChampList.get(z).m_Alive)
+					{
+						float aETA = m_ChampList.get(z).GetETA(m_HeatMap[x][y].m_Coords, m_Clock);
+						float aScore = (aETA<(aDMult*1))? 5: (aETA<(aDMult*2))? 4 : (aETA<(aDMult*3))? 3 : (aETA<(aDMult*4))? 2 : 1;
+						aScore = aScore*m_ChampList.get(z).m_Threat;
+						m_HeatMap[x][y].m_Score += (m_ChampList.get(z).m_Team==aUserTeam)? aScore : -aScore;//+ if ally - if enemy
+					}
+				}
+				aScoreSum = m_HeatMap[x][y].m_Score;
+			}
+		}
+		float aScoreAvg = aScoreSum/(HEATMAPSIZE*HEATMAPSIZE);
+		float aDev = 0;
+		for(int x=0; x<HEATMAPSIZE; x++)
+		{
+			for (int y=0; y<HEATMAPSIZE; y++)
+			{
+				aDev += Math.abs(m_HeatMap[x][y].m_Score - aScoreAvg);
+			}
+		}
+		aDev = aDev/(HEATMAPSIZE*HEATMAPSIZE);
 		
-		
+
+		for(int x=0; x<HEATMAPSIZE; x++)
+		{
+			for (int y=0; y<HEATMAPSIZE; y++)
+			{
+				float aPointDev = (m_HeatMap[x][y].m_Score - aScoreAvg)/aDev;
+				m_HeatMap[x][y].m_Score = aPointDev;//Can be made 1 line. Currently 2 for debugging.
+			}
+		}
 		
 	}
 	

@@ -59,10 +59,17 @@ public class MinerBase {
 		m_PID = getProcessId(gameWindowName);
 		System.out.println("Pid = " + m_PID); 
 
+		if (m_PID!=0)
+		{ 
+			System.out.println("Base Address: " + Integer.toHexString((int) O_GameBase));
+			m_Game = openProcess(WinNT.PROCESS_QUERY_INFORMATION | WinNT.PROCESS_VM_READ, m_PID);
+		}
+		else
+		{
+			System.out.println("Game not found");
+		}
 		O_GameBase = findBaseAddress(m_PID); 
 
-		System.out.println("Base Address: " + Integer.toHexString((int) O_GameBase));
-		m_Game = openProcess(WinNT.PROCESS_QUERY_INFORMATION | WinNT.PROCESS_VM_READ, m_PID);
 
 	}
 
