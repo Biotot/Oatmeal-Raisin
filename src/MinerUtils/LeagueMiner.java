@@ -9,8 +9,8 @@ public class LeagueMiner extends MinerBase {
 	/*
 	 * CONST BASE GAME OFFSETS
 	 */
-	static final int O_Screen = 0x0215070C, O_Clock = 0x02150724;
-	static final int O_ChampList = 0x02D968E4, O_UserLocation = 0x02DB2160;
+	static final int O_Screen = 0x02152D04, O_Clock = 0x02152D1C;
+	static final int O_ChampList = 0x02D98EC4, O_UserLocation = 0x02DB1060;
 	
 	public int m_PlayerIndex;
 	public float m_Clock;
