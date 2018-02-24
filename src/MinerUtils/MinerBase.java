@@ -37,7 +37,6 @@ public class MinerBase {
 	static String gameExe = "League of Legends.exe";
 
 
-
 	public static void main(String[] args) {
 		System.out.println("MinerBase Main");
 		/*

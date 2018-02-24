@@ -22,6 +22,7 @@ import adapters.User32;
 public class ScreenWriterPlayground {
 	public static void main(String[] args) {
 		new ScreenWriterPlayground();
+		
 	}
 	
 	public ScreenWriterPlayground() {

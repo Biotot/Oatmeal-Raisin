@@ -51,12 +51,6 @@ public class LeagueChampHUD extends JPanel {
 	@Override
 	protected void paintComponent(Graphics g) {
 		g.setColor(new Color(255, 255, 255, 200));
-		if (System.currentTimeMillis()%2==0) {
-			g.drawString("TESTING", 10, 10);
-		}
-		else {
-			g.drawString("HAIL THE KENPIRE!!!", 10, 10);
-		}
 		
 		for (int x = 0; x < m_Miner.m_ChampList.size(); x++) {
 			int aXCoord = rectX + (x*width);
@@ -81,7 +75,7 @@ public class LeagueChampHUD extends JPanel {
 			for (int y=0; y<m_Miner.HEATMAPSIZE; y++)
 			{
 				int aX = aHeatMapX+(x*25);
-				int aY = aHeatMapX+(250-(y*25));
+				int aY = aHeatMapY+(250-(y*25));
 				g.drawString(String.format("%.1f",m_Miner.m_HeatMap[x][y].m_Score), aX, aY);
 				//System.out.print(String.format("%.1f,",m_Miner.m_HeatMap[x][y].m_Score));
 				

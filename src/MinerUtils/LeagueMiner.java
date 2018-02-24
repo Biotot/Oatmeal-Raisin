@@ -141,6 +141,9 @@ public class LeagueMiner extends MinerBase {
 		tUnit.m_MAM = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_MAM,4).getFloat(0);
 		tUnit.m_Movespeed = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_Movespeed,4).getFloat(0);
 		tUnit.m_Alive = (642==readMemory(m_Game, tUnit.m_UnitBase + Unit.O_Alive,4).getInt(0));
+		//tUnit.m_APen = readMemory(m_Game, tUnit.m_UnitBase+Unit.O_HPM, 4).getFloat(0);
+		//tUnit.m_MRPen = readMemory(m_Game, tUnit.m_UnitBase+Unit.O_HPM, 4).getFloat(0);
+		//tUnit.m_Armor = readMemory(m_Game, tUnit.m_UnitBase+Unit.O_HPM, 4).getFloat(0);
 	}
 	
 	public void UpdateMapPressure()
