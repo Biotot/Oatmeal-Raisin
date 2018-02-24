@@ -186,9 +186,9 @@ public interface User32 extends W32APIOptions {
     int VK_CONTROL = 17;  
     int VK_LCONTROL = 0xA2;  
     int VK_RCONTROL = 0xA3;  
-    int VK_MENU = 18;  
-    int VK_LMENU = 0xA4;  
-    int VK_RMENU = 0xA5;  
-    boolean GetKeyboardState(byte[] state);  
-    short GetAsyncKeyState(int vKey);  
+    int VK_MENU = 18;
+    int VK_LMENU = 0xA4;
+    int VK_RMENU = 0xA5;
+    boolean GetKeyboardState(byte[] state);
+    short GetAsyncKeyState(int vKey);
 }

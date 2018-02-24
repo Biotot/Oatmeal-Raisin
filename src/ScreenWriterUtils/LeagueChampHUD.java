@@ -15,8 +15,6 @@ import MinerUtils.Unit;
 
 public class LeagueChampHUD extends JPanel {
 	private static final long serialVersionUID = 1L;
-	private static final int PREF_W = 900;
-	private static final int PREF_H = 700;
 	private static final int TIMER_DELAY = 100;
 	public int rectX = 50;
 	public int rectY = 50;
@@ -26,6 +24,7 @@ public class LeagueChampHUD extends JPanel {
 	private static LeagueMiner m_Miner;
 	
 	public LeagueChampHUD() {
+		this.setMinimumSize(getPreferredSize());
 		setOpaque(false);
 		setLayout(new GridBagLayout());
 		m_Miner = new LeagueMiner();
@@ -37,32 +36,53 @@ public class LeagueChampHUD extends JPanel {
 
 				m_Miner.UpdatePlayerListPrimary();
 				m_Miner.UpdatePlayerListSecondary();
+				m_Miner.UpdateMapPressure();
 				repaint();
+				System.out.println("TOCK" + System.currentTimeMillis());
 			}
 		}).start();
 	}
 	
 	@Override
 	public Dimension getPreferredSize() {
-		return new Dimension(PREF_W, PREF_H);
+		return new Dimension(1920, 500);
 	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
-
-		g.drawString("TESTING", 0, 0);
+		g.setColor(new Color(255, 255, 255, 200));
+		
 		for (int x = 0; x < m_Miner.m_ChampList.size(); x++) {
 			int aXCoord = rectX + (x*width);
 			Unit aUnit = m_Miner.m_ChampList.get(x);
-			g.setColor(new Color(122, 122, 122, 200));
+			
 			g.drawRect(aXCoord, rectY, width, height);
 			//g.fillRect(rectX,  rectY,  width,  height);
 			g.drawString(aUnit.m_ChampName, aXCoord+5, rectY+10);
 			g.drawString(aUnit.m_PlayerName, aXCoord+5, rectY+20);
 			g.drawString(""+aUnit.m_HPC, aXCoord+5, rectY+30);
 			g.drawString(""+aUnit.m_DistanceToUser, aXCoord+5, rectY+40);
-			g.setColor(new Color(255, 255, 255));
 		}
+		float[] aCoord = m_Miner.GetScreenCoords();
+
+		String aCoordLabel = aCoord[0] +"," + aCoord[1] + "," + aCoord[2];
+		g.drawString(aCoordLabel, rectX, rectY+75);
+		
+		int aHeatMapX = 0;
+		int aHeatMapY = 200;
+		for(int x=0; x<m_Miner.HEATMAPSIZE; x++)
+		{
+			for (int y=0; y<m_Miner.HEATMAPSIZE; y++)
+			{
+				int aX = aHeatMapX+(x*25);
+				int aY = aHeatMapY+(250-(y*25));
+				g.drawString(String.format("%.1f",m_Miner.m_HeatMap[x][y].m_Score), aX, aY);
+				//System.out.print(String.format("%.1f,",m_Miner.m_HeatMap[x][y].m_Score));
+				
+			}
+		}
+		
+		//System.out.println("TICK");
 		g.dispose();
 	}
 }

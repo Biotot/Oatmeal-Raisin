@@ -2,10 +2,12 @@ package ScreenWriterUtils;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Window;
 
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -20,6 +22,7 @@ import adapters.User32;
 public class ScreenWriterPlayground {
 	public static void main(String[] args) {
 		new ScreenWriterPlayground();
+		
 	}
 	
 	public ScreenWriterPlayground() {
@@ -32,26 +35,15 @@ public class ScreenWriterPlayground {
 					ex.printStackTrace();
 				}
 				
-				Window frame = new Window(null);
-				//frame.setUndecorated(true);
-				frame.setBackground(new Color (0,0,0,0));
-				//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				JFrame frame = new JFrame();
+				frame.setUndecorated(true);
+				frame.setBackground(new Color (0,0,0,50));
 				frame.add(new LeagueChampHUD());
-				//frame.add(new MovingShapePane());
-				
 				frame.setAlwaysOnTop(true);
 				frame.pack();
 				frame.setLocationRelativeTo(null);
 				frame.setVisible(true);
 				setTransparent(frame);
-				
-				/*
-				JLabel label = new JLabel("WINDOW-LEVEL LABEL");
-				label.setFont(new Font("", Font.BOLD, 69));
-				label.setForeground(new Color(12, 23, 255, 190));
-				frame.add(label);
-				
-				*/
 			}
 			
 			private HWND getHWnd(Component w) {
