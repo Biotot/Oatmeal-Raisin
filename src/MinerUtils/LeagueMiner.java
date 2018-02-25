@@ -217,7 +217,7 @@ public class LeagueMiner extends MinerBase {
 	}
 
 	
-	public static float[] GetScreenCoords()
+	public float[] GetScreenCoords()
 	{
 		return new float[] {
 				readMemory(m_Game, O_GameBase + O_Screen + 0x0,4).getFloat(0),

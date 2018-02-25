@@ -5,6 +5,9 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.GraphicsEnvironment;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Window;
 
 import javax.swing.JFrame;
@@ -36,12 +39,18 @@ public class ScreenWriterPlayground {
 				}
 				
 				JFrame frame = new JFrame();
+
+				GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+	            Rectangle aRect = ge.getMaximumWindowBounds();    
+	            int aMapSize = Math.floorDiv(aRect.height, 4);
+	            frame.setLocation(aRect.width-aMapSize-10, aRect.height-aMapSize+25);
+	            
 				frame.setUndecorated(true);
-				frame.setBackground(new Color (0,0,0,50));
-				frame.add(new LeagueChampHUD());
+				frame.setBackground(new Color (0,0,0,0));
+				frame.add(new LeagueChampHUD(aMapSize));
 				frame.setAlwaysOnTop(true);
 				frame.pack();
-				frame.setLocationRelativeTo(null);
+				//frame.setLocationRelativeTo(null);
 				frame.setVisible(true);
 				setTransparent(frame);
 			}
