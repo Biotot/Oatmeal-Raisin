@@ -43,10 +43,10 @@ public class ScreenWriterPlayground {
 				GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 	            Rectangle aRect = ge.getMaximumWindowBounds();    
 	            int aMapSize = Math.floorDiv(aRect.height, 4);
-	            frame.setLocation(aRect.width-aMapSize-10, aRect.height-aMapSize+25);
+	            frame.setLocation(aRect.width-aMapSize-10, aRect.height-(aMapSize*3)+30);
 	            
 				frame.setUndecorated(true);
-				frame.setBackground(new Color (0,0,0,0));
+				frame.setBackground(new Color (0,0,0,200));
 				frame.add(new LeagueChampHUD(aMapSize));
 				frame.setAlwaysOnTop(true);
 				frame.pack();

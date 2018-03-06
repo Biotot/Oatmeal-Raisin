@@ -47,7 +47,7 @@ public class LeagueChampHUD extends JPanel {
 	
 	@Override
 	public Dimension getPreferredSize() {
-		return new Dimension(m_Framesize, m_Framesize);
+		return new Dimension(m_Framesize, m_Framesize*3);
 	}
 
 	@Override
@@ -62,8 +62,8 @@ public class LeagueChampHUD extends JPanel {
 			g.drawRect(aXCoord, rectY, width, height);
 			//g.fillRect(rectX,  rectY,  width,  height);
 			g.drawString(aUnit.m_ChampName, aXCoord+5, rectY+10);
-			g.drawString(aUnit.m_PlayerName, aXCoord+5, rectY+20);
-			g.drawString(""+aUnit.m_HPC, aXCoord+5, rectY+30);
+			//g.drawString(aUnit.m_PlayerName, aXCoord+5, rectY+20);
+			//g.drawString(""+aUnit.m_HPC, aXCoord+5, rectY+30);
 			g.drawString(""+aUnit.m_DistanceToUser, aXCoord+5, rectY+40);
 		}
 		float[] aCoord = m_Miner.GetScreenCoords();
@@ -72,15 +72,17 @@ public class LeagueChampHUD extends JPanel {
 		g.drawString(aCoordLabel, rectX, rectY+75);
 		*/
 		
-		int aHeatMapX = 25;
-		int aHeatMapY = -25;
-		int aHeatMapDistance = m_Framesize/LeagueMiner.HEATMAPSIZE;
-		double aMult = 0.75;
+		int aHeatMapX = 0;
+		int aHeatMapY = (m_Framesize*2);
+		int aHeatMapDistance = m_Framesize/(LeagueMiner.HEATMAPSIZE);
+		double aMult = 0.5;
+
+		g.drawRect(aHeatMapX, aHeatMapY, m_Framesize-2, m_Framesize-2);
 		for(int x=0; x<LeagueMiner.HEATMAPSIZE; x++)
 		{
 			for (int y=0; y<LeagueMiner.HEATMAPSIZE; y++)
 			{
-				int aX = aHeatMapX+(x*aHeatMapDistance);
+				int aX = aHeatMapX+((x+1)*aHeatMapDistance);
 				int aY = aHeatMapY+(m_Framesize-(y*aHeatMapDistance));
 				
 				double aVal = m_Miner.m_HeatMap[x][y].m_Score/aMult;
@@ -107,7 +109,7 @@ public class LeagueChampHUD extends JPanel {
 					g.setColor(new Color(255,255, 0, 255));
 				}
 
-				g.drawRect(aX, aY, 3, 3);
+				g.drawRect(aX, aY, 2, 2);
 				//g.drawString(String.format("%.1f",m_Miner.m_HeatMap[x][y].m_Score), aX, aY);
 				//System.out.print(String.format("%.1f,",m_Miner.m_HeatMap[x][y].m_Score));
 				
