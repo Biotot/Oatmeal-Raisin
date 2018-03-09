@@ -9,8 +9,8 @@ public class LeagueMiner extends MinerBase {
 	/*
 	 * CONST BASE GAME OFFSETS
 	 */
-	static final int O_Screen = 0x02152D04, O_Clock = 0x02152D1C;
-	static final int O_ChampList = 0x02D98EC4, O_UserLocation = 0x02DB1060;
+	static final int O_Screen = 0x0219E81C, O_Clock = 0x0219E834;
+	static final int O_ChampList = 0x02DF129C, O_UserLocation = 0x02DFCB80;
 	public static final int HEATMAPSIZE = 5, MAPWIDTH = 15000, MAPHEIGHT = 15000;//Summoners rift specific. Fuck the other maps
 	
 	public int m_PlayerIndex;

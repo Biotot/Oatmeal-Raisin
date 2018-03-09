@@ -33,7 +33,7 @@ public class Unit {
 	 * MORE VARS AND SHIT CAN GO HERE.
 	 * 
 	 */
-	public float m_LastUpdated;
+	public float m_LastUpdated, m_DT;
 	public boolean m_Valid, m_Alive;
 	public float m_DistanceToUser, m_Threat;
 	
@@ -52,15 +52,15 @@ public class Unit {
 	}
 	public float GetETA(float tCoords[], float tClock)
 	{
-		float aDT = 0;
+		m_DT = 0;
 		if ((tClock-m_LastUpdated)>3)
 		{
-			aDT = tClock-m_LastUpdated;
+			m_DT = tClock-m_LastUpdated;
 		}
 		float aDistance = GetDistance(tCoords);
-		if (aDistance>(aDT*m_Movespeed))
+		if (aDistance>(m_DT*m_Movespeed))
 		{
-			return (aDistance-(aDT*m_Movespeed))/m_Movespeed;
+			return (aDistance-(m_DT*m_Movespeed))/m_Movespeed;
 		}
 		else
 		{

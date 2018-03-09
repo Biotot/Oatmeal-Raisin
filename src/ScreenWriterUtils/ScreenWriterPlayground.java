@@ -46,7 +46,12 @@ public class ScreenWriterPlayground {
 	            frame.setLocation(aRect.width-aMapSize-10, aRect.height-(aMapSize*3)+30);
 	            
 				frame.setUndecorated(true);
-				frame.setBackground(new Color (0,0,0,200));
+				
+
+				frame.setBackground(new Color (0,0,0,50));
+				//frame.setBackground(new Color (0,0,0,200));
+				
+				
 				frame.add(new LeagueChampHUD(aMapSize));
 				frame.setAlwaysOnTop(true);
 				frame.pack();
