@@ -48,7 +48,7 @@ public class ScreenWriterPlayground {
 				frame.setUndecorated(true);
 				
 
-				frame.setBackground(new Color (0,0,0,50));
+				frame.setBackground(new Color (0,0,0,10));
 				//frame.setBackground(new Color (0,0,0,200));
 				
 				

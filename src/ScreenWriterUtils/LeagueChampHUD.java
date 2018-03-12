@@ -31,7 +31,15 @@ public class LeagueChampHUD extends JPanel {
 		setOpaque(false);
 		setLayout(new GridBagLayout());
 		m_Miner = new LeagueMiner();
+		m_Miner.UpdatePlayerListPrimary();
+		m_Miner.UpdatePlayerListSecondary();
 		m_UserTeam = m_Miner.m_ChampList.get(m_Miner.m_PlayerIndex).m_Team;
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		new Timer(TIMER_DELAY, new ActionListener() {
 
 			@Override
@@ -57,7 +65,7 @@ public class LeagueChampHUD extends JPanel {
 		
 		int aIndex = 0;
 		int aTimeSlice = 5;
-		int aTimeModifier = 10;
+		int aTimeModifier = 15;
 		
 
 		int aXCoord = m_Framesize - width - 5;
@@ -112,30 +120,34 @@ public class LeagueChampHUD extends JPanel {
 		Color aRet;
 
 		double aVal = tData/tDev;
-		if (aVal<-2)
+		if (aVal<-1)
 		{
-			aRet = new Color(255, 0, 0, 255);
+			aRet = new Color(255, 0, 0, 255);//Red
 		}
-		else if (aVal<-1)
+		else if (aVal<0)
 		{  
-			aRet = new Color(255,165, 0, 255);
+			aRet = new Color(255,100, 0, 255);//Orange
 		}
-		else if (aVal>-1&&aVal<1)
+		else if (aVal<1)
 		{
-			aRet = new Color(255,255, 255, 255);
+			aRet = new Color(255,255, 100, 255);//Yellow w/ blue
 		}
-		else if (aVal>2)
+		else if (aVal>=1)
 		{
-			aRet = new Color(0,255, 0, 255);
-		}
-		else if (aVal>1)
-		{
-			aRet = new Color(255,255, 0, 255);
+			aRet = new Color(0,255, 0, 255);//green
 		}
 		else
 		{//Default to transparent
 			aRet = new Color(0,0,0,0);
 		}
+		
+		/*
+		 * 
+		else if (aVal>=-0.5&&aVal<=0.5)
+		{
+			aRet = new Color(255,255, 255, 255);
+		}
+		 */
 		
 		return aRet;
 	}
