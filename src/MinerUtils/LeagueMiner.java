@@ -18,16 +18,16 @@ public class LeagueMiner extends MinerBase {
 	public ArrayList<Unit> m_ChampList;
 	public HeatmapPoint m_HeatMap[][];
 	
-	public LeagueMiner()
+	public LeagueMiner(int tMapSize)
 	{
 		m_HeatMap = new HeatmapPoint[HEATMAPSIZE][HEATMAPSIZE];
 		Setup();
 		m_ChampList = new ArrayList<Unit>();
-		PlayerListInit();
+		PlayerListInit(tMapSize);
 	}
 	
 	
-	public int PlayerListInit()
+	public int PlayerListInit(int tMapSize)
 	{
 		m_Clock = GetClock();
 		int aUserBase = readMemory(m_Game, O_GameBase + O_UserLocation,4).getInt(0);
@@ -60,9 +60,10 @@ public class LeagueMiner extends MinerBase {
 			for (int y=0; y<HEATMAPSIZE; y++)
 			{
 				m_HeatMap[x][y] = new HeatmapPoint();
-				m_HeatMap[x][y].m_Coords[0] = (x+1)*aHeatMapIntervalX;
-				m_HeatMap[x][y].m_Coords[1] = 100;//Needs a y to reuse the distance math. Should throw this out tbh
-				m_HeatMap[x][y].m_Coords[2] = (y+1)*aHeatMapIntervalY;
+				m_HeatMap[x][y].m_MapCoords[0] = (x+1)*aHeatMapIntervalX;
+				m_HeatMap[x][y].m_MapCoords[1] = 100;//Needs a y to reuse the distance math. Should throw this out tbh
+				m_HeatMap[x][y].m_MapCoords[2] = (y+1)*aHeatMapIntervalY;
+				m_HeatMap[x][y].m_ScreenCoords = CoordsToMiniMap(m_HeatMap[x][y].m_MapCoords, tMapSize);
 			}
 			
 		}
@@ -163,7 +164,7 @@ public class LeagueMiner extends MinerBase {
 				{
 					if (m_ChampList.get(z).m_Alive)
 					{
-						float aETA = m_ChampList.get(z).GetETA(m_HeatMap[x][y].m_Coords, m_Clock);
+						float aETA = m_ChampList.get(z).GetETA(m_HeatMap[x][y].m_MapCoords, m_Clock);
 						float aScore = (aETA<(aDMult*1))? 5: (aETA<(aDMult*2))? 4 : (aETA<(aDMult*3))? 3 : (aETA<(aDMult*4))? 2 : 1;
 						aScore = aScore*m_ChampList.get(z).m_Threat;
 						m_HeatMap[x][y].m_Score += (m_ChampList.get(z).m_Team==aUserTeam)? aScore : -aScore;//+ if ally - if enemy
@@ -216,6 +217,18 @@ public class LeagueMiner extends MinerBase {
 		return aPlayer;
 	}
 
+	public static int[] CoordsToMiniMap(float[] tCoords, int tMapScreenSize)
+	{
+		
+		int aMapSize = 15000;
+		int aX = (int)(tMapScreenSize*(tCoords[0]/aMapSize));
+		int aZ = (int)(tMapScreenSize*(tCoords[2]/aMapSize));
+		
+		return new int[] {
+				aX,
+				tMapScreenSize-aZ
+		};
+	}
 	
 	public float[] GetScreenCoords()
 	{

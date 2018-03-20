@@ -22,6 +22,7 @@ public class LeagueChampHUD extends JPanel {
 	public int width = 100;
 	public int height = 25;
 	public int m_UserTeam = 0;
+	public Unit m_UserUnit;
 	
 	private static LeagueMiner m_Miner;
 	
@@ -30,10 +31,11 @@ public class LeagueChampHUD extends JPanel {
 		this.setMinimumSize(getPreferredSize());
 		setOpaque(false);
 		setLayout(new GridBagLayout());
-		m_Miner = new LeagueMiner();
+		m_Miner = new LeagueMiner(tMapSize);
 		m_Miner.UpdatePlayerListPrimary();
 		m_Miner.UpdatePlayerListSecondary();
-		m_UserTeam = m_Miner.m_ChampList.get(m_Miner.m_PlayerIndex).m_Team;
+		m_UserUnit = m_Miner.m_ChampList.get(m_Miner.m_PlayerIndex);
+		m_UserTeam = m_UserUnit.m_Team;
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
@@ -68,6 +70,16 @@ public class LeagueChampHUD extends JPanel {
 		int aTimeModifier = 15;
 		
 
+		//float[] aCoord = m_Miner.GetScreenCoords();
+		//String aCoordLabel = aCoord[0] +"," + aCoord[1] + "," + aCoord[2];
+		//g.drawString(aCoordLabel, rectX, rectY+75);
+		/*
+		 * I've divided these panels up into 3 parts. 
+		 * they need to be positioned less shitty and cleaned up
+		 * 
+		 */
+		
+		//first panel uses the first 1/3
 		int aXCoord = m_Framesize - width - 5;
 		for (int x = 0; x < m_Miner.m_ChampList.size(); x++) {
 			Unit aUnit = m_Miner.m_ChampList.get(x);
@@ -82,29 +94,82 @@ public class LeagueChampHUD extends JPanel {
 				g.drawString(String.format("%.0f",aUnit.m_DT), aXCoord+45, rectY+20+aYCoord);
 			}
 		}
-		//float[] aCoord = m_Miner.GetScreenCoords();
 
-		//String aCoordLabel = aCoord[0] +"," + aCoord[1] + "," + aCoord[2];
-		//g.drawString(aCoordLabel, rectX, rectY+75);
+		float[] aCoord = m_Miner.GetScreenCoords();
+		double aHeatColorMult = 0.5;
+		//second panel shows the risk of the corner slots.
+		
+		{
+			//2500 is hardcoded for 5x5 heatmap
+			int aHeadsupX = 4;
+			int aHeadsupY = m_Framesize+4;
+			int aHeadsupSpacing = 10;
+			int aXIndex = (int)aCoord[0]/2500;
+			int aYIndex = (int)aCoord[2]/2500;
+			//int aXIndex = (int)m_UserUnit.m_Coords[0]/2500;
+			//int aYIndex = (int)m_UserUnit.m_Coords[2]/2500;
+			g.setColor(new Color(255, 255, 255, 200));
+			g.drawRect(0, m_Framesize, aHeadsupSpacing+10, aHeadsupSpacing+10);
+		
+			boolean aLeft, aRight, aTop, aBot;
+			aLeft = aRight = aTop = aBot = false;
+			if (aXIndex>0) aLeft = true;
+			if (aYIndex>0) aBot = true;
+			if (aXIndex<LeagueMiner.HEATMAPSIZE) aRight = true;
+			if (aYIndex<LeagueMiner.HEATMAPSIZE) aTop = true;
+			
+			//Shifting shit just a smidge over
+			aXIndex--;
+			aYIndex--;
+		
+			g.drawString(""+aXIndex+":"+aYIndex, aHeadsupX+aHeadsupSpacing*2, aHeadsupY+4);
+			String aCoordLabel = aCoord[0] +"," + aCoord[1] + "," + aCoord[2];
+			g.drawString(aCoordLabel, aHeadsupX+(aHeadsupSpacing*2), aHeadsupY+aHeadsupSpacing+4);
+			
+			
+			if (aTop&&aLeft)
+			{
+				g.setColor(TempPicker(aHeatColorMult, m_Miner.m_HeatMap[aXIndex][aYIndex+1].m_Score));
+				g.drawRect(aHeadsupX, aHeadsupY, 2, 2);
+			}
+			if (aTop&&aRight)
+			{
+				g.setColor(TempPicker(aHeatColorMult, m_Miner.m_HeatMap[aXIndex+1][aYIndex+1].m_Score));
+				g.drawRect(aHeadsupX+aHeadsupSpacing, aHeadsupY, 2, 2);
+			}
+			if (aBot&&aLeft)
+			{
+				g.setColor(TempPicker(aHeatColorMult, m_Miner.m_HeatMap[aXIndex][aYIndex].m_Score));
+				g.drawRect(aHeadsupX, aHeadsupY+aHeadsupSpacing, 2, 2);
+			}
+			if (aBot&&aRight)
+			{
+				g.setColor(TempPicker(aHeatColorMult, m_Miner.m_HeatMap[aXIndex+1][aYIndex].m_Score));
+				g.drawRect(aHeadsupX+aHeadsupSpacing, aHeadsupY+aHeadsupSpacing, 2, 2);
+			}
+		}
 		
 		
+		//third panel displays the heatmap on the minimap.
+		//This panel is properly positioned
 		int aHeatMapX = 0;
 		int aHeatMapY = (m_Framesize*2);
-		int aHeatMapDistance = m_Framesize/(LeagueMiner.HEATMAPSIZE+1);
-		double aMult = 0.5;
 
+		int[] aCameraLoc = LeagueMiner.CoordsToMiniMap(aCoord, m_Framesize);
+		g.drawRect(aCameraLoc[0], aCameraLoc[1]+aHeatMapY, 2, 2);
+		
 		g.setColor(new Color(255, 255, 255, 200));
 		g.drawRect(aHeatMapX, aHeatMapY, m_Framesize-2, m_Framesize-2);
 		for(int x=0; x<LeagueMiner.HEATMAPSIZE; x++)
 		{
 			for (int y=0; y<LeagueMiner.HEATMAPSIZE; y++)
 			{
-				int aX = aHeatMapX+((x+1)*aHeatMapDistance);
-				int aY = aHeatMapY+(m_Framesize-((y+1)*aHeatMapDistance));
+				int aX = aHeatMapX+m_Miner.m_HeatMap[x][y].m_ScreenCoords[0];
+				int aY = aHeatMapY+m_Miner.m_HeatMap[x][y].m_ScreenCoords[1];
 				
 				//Choose color
 				//x<-2 white, x<-1 Red, -1<x<1 white, x>1 yellow x>2 green
-				g.setColor(TempPicker(aMult, m_Miner.m_HeatMap[x][y].m_Score));
+				g.setColor(TempPicker(aHeatColorMult, m_Miner.m_HeatMap[x][y].m_Score));
 
 				g.drawRect(aX, aY, 2, 2);
 				//g.drawString(String.format("%.1f",m_Miner.m_HeatMap[x][y].m_Score), aX, aY);
