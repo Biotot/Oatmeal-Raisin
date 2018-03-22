@@ -11,7 +11,7 @@ public class LeagueMiner extends MinerBase {
 	 */
 	static final int O_Screen = 0x0219E81C, O_Clock = 0x0219E834;
 	static final int O_ChampList = 0x02DF129C, O_UserLocation = 0x02DFCB80;
-	public static final int HEATMAPSIZE = 5, MAPWIDTH = 15000, MAPHEIGHT = 15000;//Summoners rift specific. Fuck the other maps
+	public static final int HEATMAPSIZE = 15, MAPWIDTH = 15000, MAPHEIGHT = 15000;//Summoners rift specific. Fuck the other maps
 	
 	public int m_PlayerIndex;
 	public float m_Clock;
@@ -131,6 +131,11 @@ public class LeagueMiner extends MinerBase {
 		//Else, the player is MIA or fully idle <- Complicated but uncommon issue. Should be able to find the 'mia' flag, but it might require
 		//a tab check like the KDA+CS check
 		
+		int aHeatMapSpacing = 15000/LeagueMiner.HEATMAPSIZE;
+		tUnit.m_GridLoc[0] = (int)(tUnit.m_Coords[0])/aHeatMapSpacing;
+		tUnit.m_GridLoc[1] = (int)(tUnit.m_Coords[2])/aHeatMapSpacing;
+		
+		
 		/*
 		*/
 		
@@ -142,9 +147,11 @@ public class LeagueMiner extends MinerBase {
 		tUnit.m_MAM = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_MAM,4).getFloat(0);
 		tUnit.m_Movespeed = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_Movespeed,4).getFloat(0);
 		tUnit.m_Alive = (642==readMemory(m_Game, tUnit.m_UnitBase + Unit.O_Alive,4).getInt(0));
-		//tUnit.m_APen = readMemory(m_Game, tUnit.m_UnitBase+Unit.O_HPM, 4).getFloat(0);
+		tUnit.m_Level = readMemory(m_Game, tUnit.m_UnitBase+Unit.O_Level, 4).getInt(0);
 		//tUnit.m_MRPen = readMemory(m_Game, tUnit.m_UnitBase+Unit.O_HPM, 4).getFloat(0);
 		//tUnit.m_Armor = readMemory(m_Game, tUnit.m_UnitBase+Unit.O_HPM, 4).getFloat(0);
+		
+		tUnit.m_Threat = tUnit.m_Level;
 	}
 	
 	public void UpdateMapPressure()
@@ -154,7 +161,8 @@ public class LeagueMiner extends MinerBase {
 		int aDMult = 5;//scalable multiplier for the distance. 
 		float aScoreSum = 0;
 
-		//fugly ass loop. N*(M^2) + 2(M^2)
+		//fugly ass loop. N*(M^2)*(Distance) + 2(M^2)
+		
 		for(int x=0; x<HEATMAPSIZE; x++)
 		{
 			for (int y=0; y<HEATMAPSIZE; y++)
@@ -173,6 +181,48 @@ public class LeagueMiner extends MinerBase {
 				aScoreSum = m_HeatMap[x][y].m_Score;
 			}
 		}
+	
+		
+		/*
+		//Revised loop. using some interesting fluid update mechanics
+		// 2(N^2)
+		for(int x=0; x<HEATMAPSIZE; x++)
+		{
+			for (int y=0; y<HEATMAPSIZE; y++)
+			{
+				m_HeatMap[x][y].m_Score = 0;
+			}
+		}
+		int aMaxTime = 20;
+		int aGridSize = 15000/HEATMAPSIZE;
+		for (int x=0; x<m_ChampList.size(); x++)
+		{	
+			int[] aGrid = m_ChampList.get(x).m_GridLoc;
+			m_HeatMap[aGrid[0]][aGrid[1]].Flow(m_ChampList.get(x).m_Threat);
+				
+			float aGridSpeed = aGridSize/m_ChampList.get(x).m_Movespeed;
+			int aGridRange = aGridSize/aGridSpeed;
+			
+			
+			for(float aDistance = 0; aDistance<20; aDistance + aGridSpeed)
+			{
+				
+				
+			}
+			
+			
+		}
+
+		for(int x=0; x<HEATMAPSIZE; x++)
+		{
+			for (int y=0; y<HEATMAPSIZE; y++)
+			{
+				aScoreSum += m_HeatMap[x][y].m_Score;
+			}
+		}
+		*/
+				
+				
 		float aScoreAvg = aScoreSum/(HEATMAPSIZE*HEATMAPSIZE);
 		float aDev = 0;
 		for(int x=0; x<HEATMAPSIZE; x++)
@@ -208,6 +258,7 @@ public class LeagueMiner extends MinerBase {
 			aPlayer.m_Team = readMemory(m_Game, aPlayer.m_UnitBase + Unit.O_Team,4).getInt(0);
 			aPlayer.m_ChampName = readMemory(m_Game, aPlayer.m_UnitBase + Unit.O_ChampName,10).getString(0);
 			aPlayer.m_PlayerName = readMemory(m_Game, aPlayer.m_UnitBase + Unit.O_PlayerName,10).getString(0);
+			aPlayer.m_Level = readMemory(m_Game, aPlayer.m_UnitBase+Unit.O_Level, 4).getInt(0);
 		}
 		else
 		{
@@ -244,4 +295,38 @@ public class LeagueMiner extends MinerBase {
 		return readMemory(m_Game,O_GameBase + O_Clock,4).getFloat(0);
 	}
 	
+	public ArrayList<HeatmapPoint> GetGridPoints(int tX, int tY)
+	{
+		ArrayList<HeatmapPoint> aGridPoints = new ArrayList<HeatmapPoint>();
+		boolean aLeft, aRight, aTop, aBot;
+		aLeft = aRight = aTop = aBot = false;
+		if (tX>0) aLeft = true;
+		if (tY>0) aBot = true;
+		if (tX<LeagueMiner.HEATMAPSIZE) aRight = true;
+		if (tY<LeagueMiner.HEATMAPSIZE) aTop = true;
+		
+		//Shifting shit just a smidge over
+		tX--;
+		tY--;
+	
+		
+		if (aTop&&aLeft)
+		{
+			aGridPoints.add(m_HeatMap[tX][tY+1]);
+		}
+		if (aTop&&aRight)
+		{
+			aGridPoints.add(m_HeatMap[tX+1][tY+1]);
+		}
+		if (aBot&&aLeft)
+		{
+			aGridPoints.add(m_HeatMap[tX][tY]);
+		}
+		if (aBot&&aRight)
+		{
+			aGridPoints.add(m_HeatMap[tX+1][tY]);
+		}
+		
+		return aGridPoints;
+	}
 }

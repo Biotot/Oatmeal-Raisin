@@ -11,4 +11,11 @@ public class HeatmapPoint {
 		m_ScreenCoords = new int[2];
 		m_Score = 0;
 	}
+
+	public void Flow(float tInflow)
+	{
+		m_Score += tInflow;
+	}
+	
+	
 }

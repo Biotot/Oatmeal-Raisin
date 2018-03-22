@@ -80,23 +80,23 @@ public class LeagueChampHUD extends JPanel {
 		 */
 		
 		//first panel uses the first 1/3
-		int aXCoord = m_Framesize - width - 5;
+		int aXCoord = m_Framesize - (width*2) - 5;
 		for (int x = 0; x < m_Miner.m_ChampList.size(); x++) {
 			Unit aUnit = m_Miner.m_ChampList.get(x);
 			if (aUnit.m_Team!=m_UserTeam)
 			{
-				int aYCoord = (aIndex*height);
+				int aYCoord = m_Framesize + (aIndex*height);
 				aIndex++;
 				g.setColor(TempPicker(aTimeSlice, aUnit.m_DistanceToUser-aTimeModifier));
-				g.drawRect(aXCoord, rectY+aYCoord, width, height);
-				g.drawString(aUnit.m_ChampName, aXCoord+5, rectY+10+aYCoord);
-				g.drawString(String.format("%.0f",aUnit.m_DistanceToUser), aXCoord+5, rectY+20+aYCoord);
-				g.drawString(String.format("%.0f",aUnit.m_DT), aXCoord+45, rectY+20+aYCoord);
+				g.drawRect(aXCoord, aYCoord, width, height);
+				g.drawString(aUnit.m_ChampName, aXCoord+5, 10+aYCoord);
+				g.drawString(String.format("%.0f",aUnit.m_DistanceToUser), aXCoord+5, 20+aYCoord);
+				g.drawString(String.format("%.0f",aUnit.m_DT), aXCoord+45, 20+aYCoord);
 			}
 		}
 
 		float[] aCoord = m_Miner.GetScreenCoords();
-		double aHeatColorMult = 0.5;
+		double aHeatColorMult = 0.75;
 		//second panel shows the risk of the corner slots.
 		
 		{
@@ -104,48 +104,58 @@ public class LeagueChampHUD extends JPanel {
 			int aHeadsupX = 4;
 			int aHeadsupY = m_Framesize+4;
 			int aHeadsupSpacing = 10;
-			int aXIndex = (int)aCoord[0]/2500;
-			int aYIndex = (int)aCoord[2]/2500;
-			//int aXIndex = (int)m_UserUnit.m_Coords[0]/2500;
-			//int aYIndex = (int)m_UserUnit.m_Coords[2]/2500;
-			g.setColor(new Color(255, 255, 255, 200));
-			g.drawRect(0, m_Framesize, aHeadsupSpacing+10, aHeadsupSpacing+10);
-		
-			boolean aLeft, aRight, aTop, aBot;
-			aLeft = aRight = aTop = aBot = false;
-			if (aXIndex>0) aLeft = true;
-			if (aYIndex>0) aBot = true;
-			if (aXIndex<LeagueMiner.HEATMAPSIZE) aRight = true;
-			if (aYIndex<LeagueMiner.HEATMAPSIZE) aTop = true;
+			int aHeatMapSpacing = 15000/LeagueMiner.HEATMAPSIZE;
+
+			//g.drawString(""+aXIndex+":"+aYIndex, aHeadsupX+aHeadsupSpacing*2, aHeadsupY+4);
+			//String aCoordLabel = aCoord[0] +"," + aCoord[1] + "," + aCoord[2];
+			//g.drawString(aCoordLabel, aHeadsupX+(aHeadsupSpacing*2), aHeadsupY+aHeadsupSpacing+4);
 			
-			//Shifting shit just a smidge over
-			aXIndex--;
-			aYIndex--;
-		
-			g.drawString(""+aXIndex+":"+aYIndex, aHeadsupX+aHeadsupSpacing*2, aHeadsupY+4);
-			String aCoordLabel = aCoord[0] +"," + aCoord[1] + "," + aCoord[2];
-			g.drawString(aCoordLabel, aHeadsupX+(aHeadsupSpacing*2), aHeadsupY+aHeadsupSpacing+4);
+			aCoord[2]+=1500;
+			for (int x = 0; x<2; x++)
+			{
+
+				int aLoopHeadsUpY = aHeadsupY + ((aHeadsupSpacing+10)*x) + 2;
+				int aXIndex = (x==0)? (int)(aCoord[0])/aHeatMapSpacing : (int)m_UserUnit.m_Coords[0]/2500;
+				int aYIndex = (x==0)? (int)(aCoord[2])/aHeatMapSpacing : (int)m_UserUnit.m_Coords[2]/2500;
+				//int aXIndex = (int)aCoord[0]/2500;
+				//int aYIndex = (int)(aCoord[2]+2000)/2500;
+				////int aXIndex = (int)m_UserUnit.m_Coords[0]/2500;
+				//int aYIndex = (int)m_UserUnit.m_Coords[2]/2500;a
+				g.setColor(new Color(255, 255, 255, 200));
+				g.drawRect(0, aLoopHeadsUpY-4, aHeadsupSpacing+10, aHeadsupSpacing+10);
 			
+				boolean aLeft, aRight, aTop, aBot;
+				aLeft = aRight = aTop = aBot = false;
+				if (aXIndex>0) aLeft = true;
+				if (aYIndex>0) aBot = true;
+				if (aXIndex<LeagueMiner.HEATMAPSIZE) aRight = true;
+				if (aYIndex<LeagueMiner.HEATMAPSIZE) aTop = true;
+				
+				//Shifting shit just a smidge over
+				aXIndex--;
+				aYIndex--;
 			
-			if (aTop&&aLeft)
-			{
-				g.setColor(TempPicker(aHeatColorMult, m_Miner.m_HeatMap[aXIndex][aYIndex+1].m_Score));
-				g.drawRect(aHeadsupX, aHeadsupY, 2, 2);
-			}
-			if (aTop&&aRight)
-			{
-				g.setColor(TempPicker(aHeatColorMult, m_Miner.m_HeatMap[aXIndex+1][aYIndex+1].m_Score));
-				g.drawRect(aHeadsupX+aHeadsupSpacing, aHeadsupY, 2, 2);
-			}
-			if (aBot&&aLeft)
-			{
-				g.setColor(TempPicker(aHeatColorMult, m_Miner.m_HeatMap[aXIndex][aYIndex].m_Score));
-				g.drawRect(aHeadsupX, aHeadsupY+aHeadsupSpacing, 2, 2);
-			}
-			if (aBot&&aRight)
-			{
-				g.setColor(TempPicker(aHeatColorMult, m_Miner.m_HeatMap[aXIndex+1][aYIndex].m_Score));
-				g.drawRect(aHeadsupX+aHeadsupSpacing, aHeadsupY+aHeadsupSpacing, 2, 2);
+				
+				if (aTop&&aLeft)
+				{
+					g.setColor(TempPicker(aHeatColorMult, m_Miner.m_HeatMap[aXIndex][aYIndex+1].m_Score));
+					g.drawRect(aHeadsupX, aLoopHeadsUpY, 2, 2);
+				}
+				if (aTop&&aRight)
+				{
+					g.setColor(TempPicker(aHeatColorMult, m_Miner.m_HeatMap[aXIndex+1][aYIndex+1].m_Score));
+					g.drawRect(aHeadsupX+aHeadsupSpacing, aLoopHeadsUpY, 2, 2);
+				}
+				if (aBot&&aLeft)
+				{
+					g.setColor(TempPicker(aHeatColorMult, m_Miner.m_HeatMap[aXIndex][aYIndex].m_Score));
+					g.drawRect(aHeadsupX, aLoopHeadsUpY+aHeadsupSpacing, 2, 2);
+				}
+				if (aBot&&aRight)
+				{
+					g.setColor(TempPicker(aHeatColorMult, m_Miner.m_HeatMap[aXIndex+1][aYIndex].m_Score));
+					g.drawRect(aHeadsupX+aHeadsupSpacing, aLoopHeadsUpY+aHeadsupSpacing, 2, 2);
+				}
 			}
 		}
 		
@@ -189,9 +199,13 @@ public class LeagueChampHUD extends JPanel {
 		{
 			aRet = new Color(255, 0, 0, 255);//Red
 		}
-		else if (aVal<0)
+		else if (aVal<-0.1)
 		{  
 			aRet = new Color(255,100, 0, 255);//Orange
+		}
+		else if (aVal<0.1)
+		{  
+			aRet = new Color(0,0, 0, 255);//White
 		}
 		else if (aVal<1)
 		{
