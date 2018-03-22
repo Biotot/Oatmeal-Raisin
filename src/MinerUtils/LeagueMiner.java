@@ -162,7 +162,7 @@ public class LeagueMiner extends MinerBase {
 		float aScoreSum = 0;
 
 		//fugly ass loop. N*(M^2)*(Distance) + 2(M^2)
-		
+		/*
 		for(int x=0; x<HEATMAPSIZE; x++)
 		{
 			for (int y=0; y<HEATMAPSIZE; y++)
@@ -181,9 +181,9 @@ public class LeagueMiner extends MinerBase {
 				aScoreSum = m_HeatMap[x][y].m_Score;
 			}
 		}
-	
+		*/
 		
-		/*
+		
 		//Revised loop. using some interesting fluid update mechanics
 		// 2(N^2)
 		for(int x=0; x<HEATMAPSIZE; x++)
@@ -195,19 +195,28 @@ public class LeagueMiner extends MinerBase {
 		}
 		int aMaxTime = 20;
 		int aGridSize = 15000/HEATMAPSIZE;
-		for (int x=0; x<m_ChampList.size(); x++)
+		for (int i=0; i<m_ChampList.size(); i++)
 		{	
-			int[] aGrid = m_ChampList.get(x).m_GridLoc;
-			m_HeatMap[aGrid[0]][aGrid[1]].Flow(m_ChampList.get(x).m_Threat);
+			int[] aGrid = m_ChampList.get(i).m_GridLoc;
+			m_HeatMap[aGrid[0]][aGrid[1]].Flow(m_ChampList.get(i).m_Threat);
 				
-			float aGridSpeed = aGridSize/m_ChampList.get(x).m_Movespeed;
-			int aGridRange = aGridSize/aGridSpeed;
+			float aGridSpeed = aGridSize/m_ChampList.get(i).m_Movespeed;//Grids per second
+			float aGridRange = (int) (aMaxTime/aGridSpeed);//Grids per second
+			float aDT = aGridSpeed;//change in time, starting after timeslice 0
 			
-			
-			for(float aDistance = 0; aDistance<20; aDistance + aGridSpeed)
+			for(int j=1; aDT<20; j++)
 			{
+				float aThreat = (20-aDT) * 1;//threat level
+				for(int x=-j; x<=j; x++)
+				{
+					for(int y=-j;y<=j; y++)
+					{
+						
+					}
+				}
 				
 				
+				aDT += aGridSpeed;
 			}
 			
 			
@@ -220,7 +229,7 @@ public class LeagueMiner extends MinerBase {
 				aScoreSum += m_HeatMap[x][y].m_Score;
 			}
 		}
-		*/
+		
 				
 				
 		float aScoreAvg = aScoreSum/(HEATMAPSIZE*HEATMAPSIZE);
@@ -314,17 +323,33 @@ public class LeagueMiner extends MinerBase {
 		{
 			aGridPoints.add(m_HeatMap[tX][tY+1]);
 		}
+		else
+		{
+			aGridPoints.add(null);
+		}
 		if (aTop&&aRight)
 		{
 			aGridPoints.add(m_HeatMap[tX+1][tY+1]);
+		}
+		else
+		{
+			aGridPoints.add(null);
 		}
 		if (aBot&&aLeft)
 		{
 			aGridPoints.add(m_HeatMap[tX][tY]);
 		}
+		else
+		{
+			aGridPoints.add(null);
+		}
 		if (aBot&&aRight)
 		{
 			aGridPoints.add(m_HeatMap[tX+1][tY]);
+		}
+		else
+		{
+			aGridPoints.add(null);
 		}
 		
 		return aGridPoints;
