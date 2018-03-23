@@ -2,25 +2,38 @@
 <CheatTable CheatEngineTableVersion="24">
   <CheatEntries>
     <CheatEntry>
-      <ID>23</ID>
-      <Description>"No description"</Description>
-      <LastState Value="5062.389648" RealAddress="033DE81C"/>
+      <ID>28</ID>
+      <Description>"Camera"</Description>
+      <LastState Value="603.62854" RealAddress="02EAF724"/>
       <VariableType>Float</VariableType>
-      <Address>"League of Legends.exe"+219E81C</Address>
+      <Address>"League of Legends.exe"+21BF724</Address>
     </CheatEntry>
     <CheatEntry>
-      <ID>24</ID>
-      <Description>"No description"</Description>
-      <LastState Value="1583.631348" RealAddress="033DE834"/>
+      <ID>29</ID>
+      <Description>"Clock"</Description>
+      <LastState Value="46.00774002" RealAddress="02EAF73C"/>
       <VariableType>Float</VariableType>
-      <Address>"League of Legends.exe"+219E834</Address>
+      <Address>"League of Legends.exe"+21BF73C</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>30</ID>
+      <Description>"Champ Name"</Description>
+      <LastState RealAddress="4C9070C0"/>
+      <VariableType>String</VariableType>
+      <Length>10</Length>
+      <Unicode>0</Unicode>
+      <ZeroTerminate>1</ZeroTerminate>
+      <Address>"League of Legends.exe"+02E1DC08</Address>
+      <Offsets>
+        <Offset>7C0</Offset>
+      </Offsets>
     </CheatEntry>
     <CheatEntry>
       <ID>17</ID>
       <Description>"User Champ"</Description>
-      <LastState Value="0" RealAddress="0C5F15B8"/>
-      <VariableType>4 Bytes</VariableType>
-      <Address>"League of Legends.exe"+02DF129C</Address>
+      <LastState Value="592.7199707" RealAddress="4C906F78"/>
+      <VariableType>Float</VariableType>
+      <Address>"League of Legends.exe"+02E1DC08</Address>
       <Offsets>
         <Offset>678</Offset>
       </Offsets>
@@ -28,9 +41,9 @@
     <CheatEntry>
       <ID>18</ID>
       <Description>"Base"</Description>
-      <LastState Value="1.114714768E-37" RealAddress="565B0708"/>
+      <LastState Value="7.219843936E-38" RealAddress="4C906900"/>
       <VariableType>Float</VariableType>
-      <Address>"League of Legends.exe"+02DF129C</Address>
+      <Address>"League of Legends.exe"+021BDCAC</Address>
       <Offsets>
         <Offset>0</Offset>
         <Offset>0</Offset>
@@ -39,9 +52,9 @@
         <CheatEntry>
           <ID>20</ID>
           <Description>"Type"</Description>
-          <LastState Value="5121" RealAddress="565B0720"/>
+          <LastState Value="5121" RealAddress="4C906918"/>
           <VariableType>4 Bytes</VariableType>
-          <Address>"League of Legends.exe"+02DF129C</Address>
+          <Address>"League of Legends.exe"+021BDCAC</Address>
           <Offsets>
             <Offset>18</Offset>
             <Offset>0</Offset>
@@ -50,9 +63,9 @@
         <CheatEntry>
           <ID>21</ID>
           <Description>"Team"</Description>
-          <LastState Value="100" RealAddress="565B071C"/>
+          <LastState Value="100" RealAddress="4C906914"/>
           <VariableType>4 Bytes</VariableType>
-          <Address>"League of Legends.exe"+02DF129C</Address>
+          <Address>"League of Legends.exe"+021BDCAC</Address>
           <Offsets>
             <Offset>14</Offset>
             <Offset>0</Offset>
@@ -61,9 +74,9 @@
         <CheatEntry>
           <ID>7</ID>
           <Description>"hpc"</Description>
-          <LastState Value="932.2081299" RealAddress="565B0D80"/>
+          <LastState Value="592.7199707" RealAddress="4C906F78"/>
           <VariableType>Float</VariableType>
-          <Address>"League of Legends.exe"+02DF129C</Address>
+          <Address>"League of Legends.exe"+021BDCAC</Address>
           <Offsets>
             <Offset>678</Offset>
             <Offset>0</Offset>
@@ -72,9 +85,9 @@
         <CheatEntry>
           <ID>13</ID>
           <Description>"hpm"</Description>
-          <LastState Value="1574.830078" RealAddress="565B0D90"/>
+          <LastState Value="592.7199707" RealAddress="4C906F88"/>
           <VariableType>Float</VariableType>
-          <Address>"League of Legends.exe"+02DF129C</Address>
+          <Address>"League of Legends.exe"+021BDCAC</Address>
           <Offsets>
             <Offset>688</Offset>
             <Offset>0</Offset>
@@ -83,9 +96,9 @@
         <CheatEntry>
           <ID>14</ID>
           <Description>"mac"</Description>
-          <LastState Value="142.1000061" RealAddress="565B09D4"/>
+          <LastState Value="280" RealAddress="4C906BCC"/>
           <VariableType>Float</VariableType>
-          <Address>"League of Legends.exe"+02DF129C</Address>
+          <Address>"League of Legends.exe"+021BDCAC</Address>
           <Offsets>
             <Offset>2CC</Offset>
             <Offset>0</Offset>
@@ -94,9 +107,9 @@
         <CheatEntry>
           <ID>15</ID>
           <Description>"mam"</Description>
-          <LastState Value="290" RealAddress="565B09E4"/>
+          <LastState Value="280" RealAddress="4C906BDC"/>
           <VariableType>Float</VariableType>
-          <Address>"League of Legends.exe"+02DF129C</Address>
+          <Address>"League of Legends.exe"+021BDCAC</Address>
           <Offsets>
             <Offset>2DC</Offset>
             <Offset>0</Offset>
@@ -105,9 +118,9 @@
         <CheatEntry>
           <ID>16</ID>
           <Description>"movespeed"</Description>
-          <LastState Value="426.2000122" RealAddress="565B11A8"/>
+          <LastState Value="681.75" RealAddress="4C9073A0"/>
           <VariableType>Float</VariableType>
-          <Address>"League of Legends.exe"+02DF129C</Address>
+          <Address>"League of Legends.exe"+021BDCAC</Address>
           <Offsets>
             <Offset>AA0</Offset>
             <Offset>0</Offset>
@@ -116,12 +129,12 @@
         <CheatEntry>
           <ID>9</ID>
           <Description>"Champ Name"</Description>
-          <LastState RealAddress="565B0EC8"/>
+          <LastState RealAddress="4C9070C0"/>
           <VariableType>String</VariableType>
           <Length>10</Length>
           <Unicode>0</Unicode>
           <ZeroTerminate>1</ZeroTerminate>
-          <Address>"League of Legends.exe"+02DF129C</Address>
+          <Address>"League of Legends.exe"+021BDCAC</Address>
           <Offsets>
             <Offset>7C0</Offset>
             <Offset>0</Offset>
@@ -130,12 +143,12 @@
         <CheatEntry>
           <ID>19</ID>
           <Description>"Player Name"</Description>
-          <LastState RealAddress="565B0728"/>
+          <LastState RealAddress="4C906920"/>
           <VariableType>String</VariableType>
           <Length>10</Length>
           <Unicode>0</Unicode>
           <ZeroTerminate>1</ZeroTerminate>
-          <Address>"League of Legends.exe"+02DF129C</Address>
+          <Address>"League of Legends.exe"+021BDCAC</Address>
           <Offsets>
             <Offset>20</Offset>
             <Offset>0</Offset>
@@ -144,9 +157,9 @@
         <CheatEntry>
           <ID>10</ID>
           <Description>"x"</Description>
-          <LastState Value="4701.049805" RealAddress="565B0788"/>
+          <LastState Value="540.5673218" RealAddress="4C906980"/>
           <VariableType>Float</VariableType>
-          <Address>"League of Legends.exe"+02DF129C</Address>
+          <Address>"League of Legends.exe"+021BDCAC</Address>
           <Offsets>
             <Offset>80</Offset>
             <Offset>0</Offset>
@@ -155,9 +168,9 @@
         <CheatEntry>
           <ID>12</ID>
           <Description>"y"</Description>
-          <LastState Value="349.382019" RealAddress="565B078C"/>
+          <LastState Value="186.6996155" RealAddress="4C906984"/>
           <VariableType>Float</VariableType>
-          <Address>"League of Legends.exe"+02DF129C</Address>
+          <Address>"League of Legends.exe"+021BDCAC</Address>
           <Offsets>
             <Offset>84</Offset>
             <Offset>0</Offset>
@@ -166,9 +179,9 @@
         <CheatEntry>
           <ID>11</ID>
           <Description>"z"</Description>
-          <LastState Value="10127.0498" RealAddress="565B0790"/>
+          <LastState Value="548.5673218" RealAddress="4C906988"/>
           <VariableType>Float</VariableType>
-          <Address>"League of Legends.exe"+02DF129C</Address>
+          <Address>"League of Legends.exe"+021BDCAC</Address>
           <Offsets>
             <Offset>88</Offset>
             <Offset>0</Offset>
@@ -177,29 +190,15 @@
         <CheatEntry>
           <ID>26</ID>
           <Description>"Level"</Description>
-          <LastState Value="14" RealAddress="565B3F64"/>
+          <LastState Value="1" RealAddress="4C90A15C"/>
           <VariableType>4 Bytes</VariableType>
-          <Address>"League of Legends.exe"+02DF129C</Address>
+          <Address>"League of Legends.exe"+021BDCAC</Address>
           <Offsets>
             <Offset>385C</Offset>
             <Offset>0</Offset>
           </Offsets>
         </CheatEntry>
       </CheatEntries>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>22</ID>
-      <Description>"No description"</Description>
-      <LastState Value="73.25054169" RealAddress="549F6290"/>
-      <VariableType>Float</VariableType>
-      <Address>549F6290</Address>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>25</ID>
-      <Description>"No description"</Description>
-      <LastState Value="14" RealAddress="565B3F64"/>
-      <VariableType>4 Bytes</VariableType>
-      <Address>565B3F64</Address>
     </CheatEntry>
   </CheatEntries>
   <UserdefinedSymbols/>
@@ -362,8 +361,8 @@
         <Element Offset="20" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer" BackgroundColor="80000005"/>
         <Element Offset="24" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer" BackgroundColor="80000005"/>
         <Element Offset="28" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer" BackgroundColor="80000005"/>
-        <Element Offset="32" Vartype="String" Bytesize="10" DisplayMethod="Unsigned Integer" BackgroundColor="80000005"/>
         <Element Offset="32" Vartype="String" Bytesize="7" DisplayMethod="Unsigned Integer" BackgroundColor="80000005"/>
+        <Element Offset="32" Vartype="String" Bytesize="10" DisplayMethod="Unsigned Integer" BackgroundColor="80000005"/>
         <Element Offset="39" Vartype="Byte" Bytesize="1" DisplayMethod="Unsigned Integer" BackgroundColor="80000005"/>
         <Element Offset="40" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Hexadecimal" BackgroundColor="80000005"/>
         <Element Offset="48" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer" BackgroundColor="80000005"/>

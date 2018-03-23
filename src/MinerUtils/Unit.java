@@ -47,19 +47,38 @@ public class Unit {
 	}
 	public float GetDistance(float tCoords[])
 	{
-		float aRet=0;
-		aRet += (m_Coords[0]-tCoords[0]) * (m_Coords[0]-tCoords[0]);
-		aRet += (m_Coords[1]-tCoords[1]) * (m_Coords[1]-tCoords[1]);
-		aRet += (m_Coords[2]-tCoords[2]) * (m_Coords[2]-tCoords[2]);
-		return (float) Math.sqrt(aRet);
-	}
-	public float GetETA(float tCoords[], float tClock)
-	{
-		m_DT = 0;
-		if ((tClock-m_LastUpdated)>3)
+
+		float aRet,aChamp,aBase;
+		aRet = aChamp = aBase = 0;
+		
+		aChamp += (m_Coords[0]-tCoords[0]) * (m_Coords[0]-tCoords[0]);
+		aChamp += (m_Coords[1]-tCoords[1]) * (m_Coords[1]-tCoords[1]);
+		aChamp += (m_Coords[2]-tCoords[2]) * (m_Coords[2]-tCoords[2]);
+		aRet = (float) Math.sqrt(aChamp);
+		
+		
+		if (m_DT>8)
 		{
-			m_DT = tClock-m_LastUpdated;
+			if (m_Team==100)
+			{
+				aBase += (500-tCoords[0]) * (500-tCoords[0]);
+				aBase += (500-tCoords[1]) * (500-tCoords[1]);
+				aBase += (500-tCoords[2]) * (500-tCoords[2]);
+			}
+			else
+			{
+				aBase += (14500-tCoords[0]) * (14500-tCoords[0]);
+				aBase += (14500-tCoords[1]) * (14500-tCoords[1]);
+				aBase += (14500-tCoords[2]) * (14500-tCoords[2]);
+			}
+			aBase = (float) Math.sqrt(aBase);
+			if (aBase < aRet) aRet = aBase;
 		}
+		
+		return aRet;
+	}
+	public float GetETA(float tCoords[])
+	{
 		float aDistance = GetDistance(tCoords);
 		if (aDistance>(m_DT*m_Movespeed))
 		{

@@ -106,7 +106,6 @@ public class LeagueChampHUD extends JPanel {
 			int aHeadsupSpacing = 10;
 			int aHeatMapSpacing = 15000/LeagueMiner.HEATMAPSIZE;
 
-			//g.drawString(""+aXIndex+":"+aYIndex, aHeadsupX+aHeadsupSpacing*2, aHeadsupY+4);
 			//String aCoordLabel = aCoord[0] +"," + aCoord[1] + "," + aCoord[2];
 			//g.drawString(aCoordLabel, aHeadsupX+(aHeadsupSpacing*2), aHeadsupY+aHeadsupSpacing+4);
 			
@@ -115,8 +114,8 @@ public class LeagueChampHUD extends JPanel {
 			{
 
 				int aLoopHeadsUpY = aHeadsupY + ((aHeadsupSpacing+10)*x) + 2;
-				int aXIndex = (x==0)? (int)(aCoord[0])/aHeatMapSpacing : (int)m_UserUnit.m_Coords[0]/2500;
-				int aYIndex = (x==0)? (int)(aCoord[2])/aHeatMapSpacing : (int)m_UserUnit.m_Coords[2]/2500;
+				int aXIndex = (x==0)? (int)(aCoord[0])/aHeatMapSpacing : (int)m_UserUnit.m_Coords[0]/aHeatMapSpacing;
+				int aYIndex = (x==0)? (int)(aCoord[2])/aHeatMapSpacing : (int)m_UserUnit.m_Coords[2]/aHeatMapSpacing;
 				//int aXIndex = (int)aCoord[0]/2500;
 				//int aYIndex = (int)(aCoord[2]+2000)/2500;
 				////int aXIndex = (int)m_UserUnit.m_Coords[0]/2500;
@@ -134,7 +133,10 @@ public class LeagueChampHUD extends JPanel {
 				//Shifting shit just a smidge over
 				aXIndex--;
 				aYIndex--;
-			
+
+				g.drawString(""+aXIndex+":"+aYIndex, aHeadsupX+(aHeadsupSpacing*2), aLoopHeadsUpY+4);
+				String aCoordLabel = aXIndex +"," + aYIndex;
+				g.drawString(aCoordLabel, aHeadsupX+(aHeadsupSpacing*2), aLoopHeadsUpY+aHeadsupSpacing+4);
 				
 				if (aTop&&aLeft)
 				{

@@ -9,8 +9,8 @@ public class LeagueMiner extends MinerBase {
 	/*
 	 * CONST BASE GAME OFFSETS
 	 */
-	static final int O_Screen = 0x0219E81C, O_Clock = 0x0219E834;
-	static final int O_ChampList = 0x02DF129C, O_UserLocation = 0x02DFCB80;
+	static final int O_Screen = 0x021BF724, O_Clock = 0x021BF73C;
+	static final int O_ChampList = 0x021BDCAC, O_UserLocation = 0x02E1DC08;
 	public static final int HEATMAPSIZE = 15, MAPWIDTH = 15000, MAPHEIGHT = 15000;//Summoners rift specific. Fuck the other maps
 	
 	public int m_PlayerIndex;
@@ -82,7 +82,7 @@ public class LeagueMiner extends MinerBase {
 			{
 				if (m_ChampList.get(x).m_Alive)//User isnt dead
 				{
-					m_ChampList.get(x).m_DistanceToUser = m_ChampList.get(x).GetETA(m_ChampList.get(m_PlayerIndex).m_Coords, m_Clock);
+					m_ChampList.get(x).m_DistanceToUser = m_ChampList.get(x).GetETA(m_ChampList.get(m_PlayerIndex).m_Coords);
 				}
 				else
 				{
@@ -123,11 +123,27 @@ public class LeagueMiner extends MinerBase {
 		float aMAC = tUnit.m_MAC;
 		tUnit.m_MAC = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_MAC,4).getFloat(0);
 		aChanged = (aChanged || (aMAC!=tUnit.m_MAC));
+
 		
+		float aPotentialHP = tUnit.m_HPC;
 		if (aChanged)//Check if any values changed. If yes, update last updated
 		{
 			tUnit.m_LastUpdated = tClock;
+			tUnit.m_DT = 0;
 		}
+		else
+		{
+			 tUnit.m_DT = (tClock - tUnit.m_LastUpdated);
+			 if (tUnit.m_DT > 15)
+			 {
+				 aPotentialHP = tUnit.m_HPM;
+			 }
+			
+		}
+		
+		
+
+		tUnit.m_Threat = tUnit.m_Level * (tUnit.m_HPC/tUnit.m_HPM);
 		//Else, the player is MIA or fully idle <- Complicated but uncommon issue. Should be able to find the 'mia' flag, but it might require
 		//a tab check like the KDA+CS check
 		
@@ -162,17 +178,18 @@ public class LeagueMiner extends MinerBase {
 		float aScoreSum = 0;
 
 		//fugly ass loop. N*(M^2)*(Distance) + 2(M^2)
-		/*
+		
 		for(int x=0; x<HEATMAPSIZE; x++)
 		{
 			for (int y=0; y<HEATMAPSIZE; y++)
 			{
-				m_HeatMap[x][y].m_Score = 0;
+				//m_HeatMap[x][y].m_Score = 0;
+				m_HeatMap[x][y].m_Score = m_HeatMap[x][y].m_Score/2;
 				for (int z=0; z<m_ChampList.size(); z++)
 				{
 					if (m_ChampList.get(z).m_Alive)
 					{
-						float aETA = m_ChampList.get(z).GetETA(m_HeatMap[x][y].m_MapCoords, m_Clock);
+						float aETA = m_ChampList.get(z).GetETA(m_HeatMap[x][y].m_MapCoords);
 						float aScore = (aETA<(aDMult*1))? 5: (aETA<(aDMult*2))? 4 : (aETA<(aDMult*3))? 3 : (aETA<(aDMult*4))? 2 : 1;
 						aScore = aScore*m_ChampList.get(z).m_Threat;
 						m_HeatMap[x][y].m_Score += (m_ChampList.get(z).m_Team==aUserTeam)? aScore : -aScore;//+ if ally - if enemy
@@ -181,16 +198,17 @@ public class LeagueMiner extends MinerBase {
 				aScoreSum = m_HeatMap[x][y].m_Score;
 			}
 		}
-		*/
+		
 		
 		
 		//Revised loop. using some interesting fluid update mechanics
 		// 2(N^2)
+		/*
 		for(int x=0; x<HEATMAPSIZE; x++)
 		{
 			for (int y=0; y<HEATMAPSIZE; y++)
 			{
-				m_HeatMap[x][y].m_Score = 0;
+				m_HeatMap[x][y].m_Score = m_HeatMap[x][y].m_Score/2;
 			}
 		}
 		int aMaxTime = 20;
@@ -221,7 +239,6 @@ public class LeagueMiner extends MinerBase {
 			
 			
 		}
-
 		for(int x=0; x<HEATMAPSIZE; x++)
 		{
 			for (int y=0; y<HEATMAPSIZE; y++)
@@ -229,6 +246,7 @@ public class LeagueMiner extends MinerBase {
 				aScoreSum += m_HeatMap[x][y].m_Score;
 			}
 		}
+		 */
 		
 				
 				
