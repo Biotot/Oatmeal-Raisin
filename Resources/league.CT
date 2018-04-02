@@ -162,6 +162,46 @@
           </Offsets>
         </CheatEntry>
         <CheatEntry>
+          <ID>32</ID>
+          <Description>"AR"</Description>
+          <VariableType>Float</VariableType>
+          <Address>"League of Legends.exe"+021BDCAC</Address>
+          <Offsets>
+            <Offset>A88</Offset>
+            <Offset>0</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>33</ID>
+          <Description>"AD"</Description>
+          <VariableType>Float</VariableType>
+          <Address>"League of Legends.exe"+021BDCAC</Address>
+          <Offsets>
+            <Offset>9E4</Offset>
+            <Offset>0</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>38</ID>
+          <Description>"AP"</Description>
+          <VariableType>Float</VariableType>
+          <Address>"League of Legends.exe"+021BDCAC</Address>
+          <Offsets>
+            <Offset>9EC</Offset>
+            <Offset>0</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>36</ID>
+          <Description>"MR"</Description>
+          <VariableType>Float</VariableType>
+          <Address>"League of Legends.exe"+021BDCAC</Address>
+          <Offsets>
+            <Offset>A90</Offset>
+            <Offset>0</Offset>
+          </Offsets>
+        </CheatEntry>
+        <CheatEntry>
           <ID>26</ID>
           <Description>"Level"</Description>
           <VariableType>4 Bytes</VariableType>
@@ -172,6 +212,30 @@
           </Offsets>
         </CheatEntry>
       </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>31</ID>
+      <Description>"No description"</Description>
+      <VariableType>Float</VariableType>
+      <Address>4C716F70</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>34</ID>
+      <Description>"No description"</Description>
+      <VariableType>Float</VariableType>
+      <Address>4C716F78</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>35</ID>
+      <Description>"No description"</Description>
+      <VariableType>Float</VariableType>
+      <Address>4C716ECC</Address>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>37</ID>
+      <Description>"No description"</Description>
+      <VariableType>Float</VariableType>
+      <Address>4C716ED4</Address>
     </CheatEntry>
   </CheatEntries>
   <UserdefinedSymbols/>
@@ -334,8 +398,8 @@
         <Element Offset="20" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer" BackgroundColor="80000005"/>
         <Element Offset="24" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer" BackgroundColor="80000005"/>
         <Element Offset="28" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer" BackgroundColor="80000005"/>
-        <Element Offset="32" Vartype="String" Bytesize="7" DisplayMethod="Unsigned Integer" BackgroundColor="80000005"/>
         <Element Offset="32" Vartype="String" Bytesize="10" DisplayMethod="Unsigned Integer" BackgroundColor="80000005"/>
+        <Element Offset="32" Vartype="String" Bytesize="7" DisplayMethod="Unsigned Integer" BackgroundColor="80000005"/>
         <Element Offset="39" Vartype="Byte" Bytesize="1" DisplayMethod="Unsigned Integer" BackgroundColor="80000005"/>
         <Element Offset="40" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Hexadecimal" BackgroundColor="80000005"/>
         <Element Offset="48" Vartype="4 Bytes" Bytesize="4" DisplayMethod="Unsigned Integer" BackgroundColor="80000005"/>

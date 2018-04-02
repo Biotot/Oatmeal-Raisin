@@ -98,9 +98,24 @@ public class LeagueMiner extends MinerBase {
 
 	public void UpdatePlayerListSecondary()
 	{
+		Unit aAvg = new Unit();
+		aAvg.Default();
 		for (int x=0; x<m_ChampList.size(); x++)
 		{
 			UpdatePlayerSecondary(m_ChampList.get(x));
+			aAvg.Plus(m_ChampList.get(x));
+		}
+		aAvg.Divide(m_ChampList.size());
+		Unit aDev = new Unit();
+		aDev.Default();
+		for (int x=0; x<m_ChampList.size(); x++)
+		{
+			aDev.Plus(m_ChampList.get(x).Deviation(aAvg));
+		}
+		aDev.Divide(m_ChampList.size());
+		for (int x=0; x<m_ChampList.size(); x++)
+		{
+			m_ChampList.get(x).Score(aDev, aAvg);
 		}
 	}
 	//This would be cleaner in the Unit class, but I'd prefer the readmemory to be an inherited call instead of static.
@@ -126,6 +141,7 @@ public class LeagueMiner extends MinerBase {
 
 		
 		float aPotentialHP = tUnit.m_HPC;
+		float aPotentialMP = tUnit.m_MAC;
 		if (aChanged)//Check if any values changed. If yes, update last updated
 		{
 			tUnit.m_LastUpdated = tClock;
@@ -134,16 +150,16 @@ public class LeagueMiner extends MinerBase {
 		else
 		{
 			 tUnit.m_DT = (tClock - tUnit.m_LastUpdated);
-			 if (tUnit.m_DT > 15)
+			 if (tUnit.m_DT > 8)
 			 {
 				 aPotentialHP = tUnit.m_HPM;
+				 aPotentialMP = tUnit.m_MAM;
 			 }
 			
 		}
 		
-		
-
-		tUnit.m_Threat = tUnit.m_Level * (tUnit.m_HPC/tUnit.m_HPM);
+		//Threat modifier. 2 parts HP 1 part MANA //fuck... this'll fuck on energy units.
+		//float aThreatModifier = (2*(tUnit.m_HPC/tUnit.m_HPM) + (tUnit.m_MAC/tUnit.m_MAM))/3;
 		//Else, the player is MIA or fully idle <- Complicated but uncommon issue. Should be able to find the 'mia' flag, but it might require
 		//a tab check like the KDA+CS check
 		
@@ -162,12 +178,23 @@ public class LeagueMiner extends MinerBase {
 		tUnit.m_HPM = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_HPM,4).getFloat(0);
 		tUnit.m_MAM = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_MAM,4).getFloat(0);
 		tUnit.m_Movespeed = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_Movespeed,4).getFloat(0);
+		tUnit.m_AR = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_AR, 4).getFloat(0);
+		tUnit.m_MR = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_MR,4).getFloat(0);
+		tUnit.m_AD = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_AD,4).getFloat(0);
+		tUnit.m_AP = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_AP,4).getFloat(0);
+		boolean aAlive = tUnit.m_Alive;
 		tUnit.m_Alive = (642==readMemory(m_Game, tUnit.m_UnitBase + Unit.O_Alive,4).getInt(0));
+		if ((aAlive!=tUnit.m_Alive)&&(tUnit.m_Alive==false))
+		{
+			float aGridAvg = GetGridAverage(tUnit.m_GridLoc[0], tUnit.m_GridLoc[1]);
+			tUnit.m_DeathTileSum+=aGridAvg;
+			tUnit.m_DeathCount++;
+		}
 		tUnit.m_Level = readMemory(m_Game, tUnit.m_UnitBase+Unit.O_Level, 4).getInt(0);
 		//tUnit.m_MRPen = readMemory(m_Game, tUnit.m_UnitBase+Unit.O_HPM, 4).getFloat(0);
 		//tUnit.m_Armor = readMemory(m_Game, tUnit.m_UnitBase+Unit.O_HPM, 4).getFloat(0);
 		
-		tUnit.m_Threat = tUnit.m_Level;
+		//tUnit.m_Threat = tUnit.m_Level;
 	}
 	
 	public void UpdateMapPressure()
@@ -184,13 +211,15 @@ public class LeagueMiner extends MinerBase {
 			for (int y=0; y<HEATMAPSIZE; y++)
 			{
 				//m_HeatMap[x][y].m_Score = 0;
-				m_HeatMap[x][y].m_Score = m_HeatMap[x][y].m_Score/2;
+				m_HeatMap[x][y].m_Score -= 0;//m_HeatMap[x][y].m_Score/2;
 				for (int z=0; z<m_ChampList.size(); z++)
 				{
 					if (m_ChampList.get(z).m_Alive)
 					{
 						float aETA = m_ChampList.get(z).GetETA(m_HeatMap[x][y].m_MapCoords);
+						//float aScore = ((float)(aDMult)/aETA);//Expect them there in 20s or less points
 						float aScore = (aETA<(aDMult*1))? 5: (aETA<(aDMult*2))? 4 : (aETA<(aDMult*3))? 3 : (aETA<(aDMult*4))? 2 : 1;
+						
 						aScore = aScore*m_ChampList.get(z).m_Threat;
 						m_HeatMap[x][y].m_Score += (m_ChampList.get(z).m_Team==aUserTeam)? aScore : -aScore;//+ if ally - if enemy
 					}
@@ -198,57 +227,6 @@ public class LeagueMiner extends MinerBase {
 				aScoreSum = m_HeatMap[x][y].m_Score;
 			}
 		}
-		
-		
-		
-		//Revised loop. using some interesting fluid update mechanics
-		// 2(N^2)
-		/*
-		for(int x=0; x<HEATMAPSIZE; x++)
-		{
-			for (int y=0; y<HEATMAPSIZE; y++)
-			{
-				m_HeatMap[x][y].m_Score = m_HeatMap[x][y].m_Score/2;
-			}
-		}
-		int aMaxTime = 20;
-		int aGridSize = 15000/HEATMAPSIZE;
-		for (int i=0; i<m_ChampList.size(); i++)
-		{	
-			int[] aGrid = m_ChampList.get(i).m_GridLoc;
-			m_HeatMap[aGrid[0]][aGrid[1]].Flow(m_ChampList.get(i).m_Threat);
-				
-			float aGridSpeed = aGridSize/m_ChampList.get(i).m_Movespeed;//Grids per second
-			float aGridRange = (int) (aMaxTime/aGridSpeed);//Grids per second
-			float aDT = aGridSpeed;//change in time, starting after timeslice 0
-			
-			for(int j=1; aDT<20; j++)
-			{
-				float aThreat = (20-aDT) * 1;//threat level
-				for(int x=-j; x<=j; x++)
-				{
-					for(int y=-j;y<=j; y++)
-					{
-						
-					}
-				}
-				
-				
-				aDT += aGridSpeed;
-			}
-			
-			
-		}
-		for(int x=0; x<HEATMAPSIZE; x++)
-		{
-			for (int y=0; y<HEATMAPSIZE; y++)
-			{
-				aScoreSum += m_HeatMap[x][y].m_Score;
-			}
-		}
-		 */
-		
-				
 				
 		float aScoreAvg = aScoreSum/(HEATMAPSIZE*HEATMAPSIZE);
 		float aDev = 0;
@@ -321,8 +299,25 @@ public class LeagueMiner extends MinerBase {
 	{
 		return readMemory(m_Game,O_GameBase + O_Clock,4).getFloat(0);
 	}
-	
-	public ArrayList<HeatmapPoint> GetGridPoints(int tX, int tY)
+	public float GetGridAverage(int tX, int tY)
+	{
+		//float aRet = 0;
+		 ArrayList<HeatmapPoint> aBorderTiles = GetGridBorders(tX,tY);
+		float aAvg = 0;
+		int aActiveCount = 0;
+		for(int y=0; y<aBorderTiles.size(); y++)
+		{
+			
+			if (aBorderTiles.get(y)!=null)
+			{
+				aAvg += aBorderTiles.get(y).m_Score;
+				aActiveCount++;
+			}
+		}
+		aAvg = aAvg/aActiveCount;
+		return aAvg;
+	}
+	public ArrayList<HeatmapPoint> GetGridBorders(int tX, int tY)
 	{
 		ArrayList<HeatmapPoint> aGridPoints = new ArrayList<HeatmapPoint>();
 		boolean aLeft, aRight, aTop, aBot;
@@ -335,8 +330,6 @@ public class LeagueMiner extends MinerBase {
 		//Shifting shit just a smidge over
 		tX--;
 		tY--;
-	
-		
 		if (aTop&&aLeft)
 		{
 			aGridPoints.add(m_HeatMap[tX][tY+1]);
