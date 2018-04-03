@@ -62,7 +62,7 @@ public class Unit {
 	}
 	public void Score(Unit tDev, Unit tAvg)
 	{
-		m_StatScore = 0;
+		m_StatScore = m_Level;//0;
 		
 		if (tDev.m_Level!=0)
 		{
@@ -70,15 +70,15 @@ public class Unit {
 		}
 		if (tDev.m_AR!=0)
 		{
-			m_StatScore += (m_AR-tAvg.m_AR)/tDev.m_AR;
+			m_StatScore += (m_AR-tAvg.m_AR)/(tDev.m_AR*2);
 		}
 		if (tDev.m_MR!=0)
 		{
-			m_StatScore += (m_MR-tAvg.m_MR)/tDev.m_MR;
+			m_StatScore += (m_MR-tAvg.m_MR)/(tDev.m_MR*2);
 		}
 		if (tDev.m_Movespeed!=0)
 		{
-			m_StatScore += (m_Movespeed-tAvg.m_Movespeed)/tDev.m_Movespeed;
+			m_StatScore += (m_Movespeed-tAvg.m_Movespeed)/(tDev.m_Movespeed*2);
 		}
 		if (tDev.m_AD!=0)
 		{
@@ -107,7 +107,7 @@ public class Unit {
 		
 
 		float aThreatModifier = (m_HPC/m_HPM);
-		aThreatModifier *= m_StatScore;
+		aThreatModifier *= m_Level;
 		m_Threat = aThreatModifier;
 	}
 	public void Plus(Unit tAdd)
