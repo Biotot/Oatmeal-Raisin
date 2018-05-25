@@ -9,8 +9,8 @@ public class LeagueMiner extends MinerBase {
 	/*
 	 * CONST BASE GAME OFFSETS
 	 */
-	static final int O_Screen = 0x021BF724, O_Clock = 0x021BF73C;
-	static final int O_ChampList = 0x021BDCAC, O_UserLocation = 0x02E1DC08;
+	static final int O_Screen = 0x21D3DFC, O_Clock = 0x21D3E14;
+	static final int O_ChampList = 0x021D6EDC, O_UserLocation = 0x02E2FEF8;
 	public static final int HEATMAPSIZE = 15, MAPWIDTH = 15000, MAPHEIGHT = 15000;//Summoners rift specific. Fuck the other maps
 	
 	public int m_PlayerIndex;
@@ -127,10 +127,10 @@ public class LeagueMiner extends MinerBase {
 		tUnit.m_Coords[0] = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_X,4).getFloat(0);
 		aChanged = (aChanged || (aX!=tUnit.m_Coords[0]));
 		float aY = tUnit.m_Coords[1];
-		tUnit.m_Coords[1] = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_Y,4).getFloat(0);
+		tUnit.m_Coords[1] = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_Y,4).getFloat(0);//GHETTO RIGGING TO FIX THEM SWAPPING Z AND Y
 		aChanged = (aChanged || (aY!=tUnit.m_Coords[1]));
 		float aZ = tUnit.m_Coords[2];
-		tUnit.m_Coords[2] = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_Z,4).getFloat(0);
+		tUnit.m_Coords[2] = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_Z,4).getFloat(0);//GHETTO RIGGING TO FIX THEM SWAPPING Z AND Y
 		aChanged = (aChanged || (aZ!=tUnit.m_Coords[2]));
 		float aHPC = tUnit.m_HPC;
 		tUnit.m_HPC = readMemory(m_Game, tUnit.m_UnitBase + Unit.O_HPC,4).getFloat(0);
@@ -290,8 +290,8 @@ public class LeagueMiner extends MinerBase {
 	{
 		return new float[] {
 				readMemory(m_Game, O_GameBase + O_Screen + 0x0,4).getFloat(0),
-				readMemory(m_Game, O_GameBase + O_Screen + 0x4,4).getFloat(0),
-				readMemory(m_Game, O_GameBase + O_Screen + 0x8,4).getFloat(0)
+				readMemory(m_Game, O_GameBase + O_Screen + 0x4,4).getFloat(0),//GHETTO RIGGING TO FIX THEM SWAPPING Z AND Y
+				readMemory(m_Game, O_GameBase + O_Screen + 0x8,4).getFloat(0)//GHETTO RIGGING TO FIX THEM SWAPPING Z AND Y
 		};
 	}
 

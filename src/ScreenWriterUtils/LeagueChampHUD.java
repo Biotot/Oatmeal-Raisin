@@ -250,8 +250,8 @@ public class LeagueChampHUD extends JPanel {
 				//x<-2 white, x<-1 Red, -1<x<1 white, x>1 yellow x>2 green
 				g.setColor(TempPicker(aHeatColorMult, m_Miner.m_HeatMap[x][y].m_Score));
 
-				//g.drawRect(aX, aY, 2, 2);
-				g.drawString(String.format("%.1f",m_Miner.m_HeatMap[x][y].m_Score), aX, aY);
+				g.drawRect(aX, aY, 2, 2);
+				//g.drawString(String.format("%.1f",m_Miner.m_HeatMap[x][y].m_Score), aX, aY);
 				
 			}
 		}
